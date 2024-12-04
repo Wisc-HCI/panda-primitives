@@ -1,0 +1,1 @@
+/workspace/devel/.private/ros_numpy/lib/python3/dist-packages/ros_numpy/__init__.py

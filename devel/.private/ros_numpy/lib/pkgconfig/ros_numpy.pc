@@ -1,0 +1,8 @@
+prefix=/workspace/devel/.private/ros_numpy
+
+Name: ros_numpy
+Description: Description of ros_numpy
+Version: 0.0.5
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

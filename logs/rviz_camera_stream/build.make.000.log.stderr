@@ -1,0 +1,8 @@
+In file included from [01m[K/workspace/build/rviz_camera_stream/include/rviz_camera_stream/moc_camera_display.cpp:9[m[K:
+[01m[K/workspace/build/rviz_camera_stream/include/rviz_camera_stream/../../../../src/rviz_camera_stream/include/rviz_camera_stream/camera_display.h:154:10:[m[K [01;35m[Kwarning: [m[Kinline variables are only available with ‘[01m[K-std=c++17[m[K’ or ‘[01m[K-std=gnu++17[m[K’
+  154 |   static [01;35m[Kinline[m[K int count_ = 0;
+      |          [01;35m[K^~~~~~[m[K
+In file included from [01m[K/workspace/src/rviz_camera_stream/src/camera_display.cpp:62[m[K:
+[01m[K/workspace/src/rviz_camera_stream/include/rviz_camera_stream/camera_display.h:154:10:[m[K [01;35m[Kwarning: [m[Kinline variables are only available with ‘[01m[K-std=c++17[m[K’ or ‘[01m[K-std=gnu++17[m[K’
+  154 |   static [01;35m[Kinline[m[K int count_ = 0;
+      |          [01;35m[K^~~~~~[m[K

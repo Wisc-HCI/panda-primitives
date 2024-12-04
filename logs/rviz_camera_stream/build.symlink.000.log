@@ -1,0 +1,4 @@
+Symlinking /workspace/devel/lib/librviz_camera_stream.so
+Symlinking /workspace/devel/lib/pkgconfig/rviz_camera_stream.pc
+Symlinking /workspace/devel/share/rviz_camera_stream/cmake/rviz_camera_streamConfig.cmake
+Symlinking /workspace/devel/share/rviz_camera_stream/cmake/rviz_camera_streamConfig-version.cmake

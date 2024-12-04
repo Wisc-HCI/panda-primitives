@@ -31,8 +31,9 @@ Dependencies:
 Recommend to use [catkin_tools](https://catkin-tools.readthedocs.io/en/latest/) to compile.
 Then build with:
 
-```
-> catkin build authoring
+```bash
+catkin build authoring
+source devel/setup.bash
 ```
 
 Usage

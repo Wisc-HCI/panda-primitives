@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+import numpy as np
+import math
+import rospy
+import signal
+import sys
+from geometry_msgs.msg import PoseStamped, PoseArray, Quaternion, TransformStamped
+from authoring_msgs.msg import POI, POIArray
+from std_msgs.msg import String
+import tf
+import tf2_ros
+import copy
+import PyKDL
+
+REFERENCE_FRAME='panda_link0'
+
+class Poi(object):
+    def __init__(self):
+        self._br = tf2_ros.TransformBroadcaster()
+        self._pois_pub = rospy.Publisher("/pois",POIArray,queue_size=1,latch=True)
+        self._simulated_objects_pub = rospy.Publisher("/simulated_objects",POIArray,queue_size=1,latch=True)
+        self._array=POIArray()
+        self._simulated_objects=POIArray()
+        self._tf_array = []
+        self._virtual = rospy.get_param('~only_virtual')
+        self.init_pois()
+        
+    def init_pois(self):
+        #POI1
+        poi_init = POI()
+        poi_init.pose.pose.position.x=.625-3*0.026
+        poi_init.pose.pose.position.y=-.295
+        poi_init.pose.pose.position.z=.08
+        poi_init.pose.pose.orientation.w=1
+        poi_init.pose.header.frame_id = REFERENCE_FRAME
+        poi_init.type = String("screw")
+        poi_init.state = String("unscrewed")
+        poi_init.id = 0
+        #self._array.poi_array.append(poi_init)
+        screw_n = 0
+        hole_n = 0
+        box_poi = copy.deepcopy(poi_init)
+        box_poi.type = String("box")
+        box_poi.state = String("")
+        box_poi.pose.pose.position.x+=.07
+        box_poi.pose.pose.position.y+=0.05
+        box_poi.pose.pose.position.z+=0.08
+        self._array.poi_array.append(box_poi)
+
+        
+        #for i in range(0):
+        #    poi = copy.deepcopy(poi_init)
+        #    poi.pose.pose.position.x+=(i)*0.0375
+        #    poi.pose.pose.position.y-=(i)*0.001
+        #    poi.id = screw_n
+        #    screw_n += 1
+        #    self._array.poi_array.append(poi)
+        #for i in range(5):
+        #    poi = copy.deepcopy(poi_init)
+        #    poi.pose.pose.position.x+=(i)*0.0375
+        #    poi.pose.pose.position.y-=(i)*0.001
+        #    poi.pose.pose.position.z-=0.015
+        #    poi.id = hole_n
+        #    hole_n += 1
+        #    poi.type = poi.HOLE
+        #    self._array.poi_array.append(poi)
+        off_x=-.197-.036 -.052
+        off_y=-.001
+        off_z=-.015
+        for i in range(6):
+            for j in range(5):
+                if self._virtual and ((i==0 or i ==5) and (j==0 or j == 4)) or ((i == 2) and (j == 1 or j==3)) or (i==4 and j==2):
+                    poi = copy.deepcopy(poi_init)
+                    poi.age = 4
+                    poi.pose.pose.position.x+=off_x+.036*i
+                    poi.pose.pose.position.y+=off_y+.04*j
+                    poi.pose.pose.position.z+=off_z+.0135
+                    poi.id = screw_n
+                    screw_n += 1
+                    self._simulated_objects.poi_array.append(poi)
+                poi = copy.deepcopy(poi_init)
+                poi.pose.pose.position.x+=off_x+.036*i
+                poi.pose.pose.position.y+=off_y+.04*j
+                poi.pose.pose.position.z+=off_z+.0005*i
+                poi.id = hole_n
+                hole_n += 1
+                poi.type = String("hole")
+                poi.state = String("")
+                self._array.poi_array.append(poi)
+
+        self._pois_pub.publish(self._array)
+        if self._virtual:
+            self._simulated_objects_pub.publish(self._simulated_objects)
+
+    def run(self):
+        rospy.spin()
+
+    def signal_handler(self, signal, frame):
+        sys.exit()
+
+if __name__ == "__main__":
+    rospy.init_node('poi')
+    poi = Poi()
+    signal.signal(signal.SIGINT, poi.signal_handler)
+    poi.run()

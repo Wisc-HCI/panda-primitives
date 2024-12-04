@@ -1,0 +1,805 @@
+#!/usr/bin/env python
+import rospy
+import signal
+import sys
+import math
+import tf
+import PyKDL
+import copy
+import numpy as np
+import actionlib
+
+from geometry_msgs.msg import Twist,Pose,PoseStamped,Quaternion,Vector3,Wrench
+from nav_msgs.msg import Path
+from std_msgs.msg import String, Bool
+
+from sensor_msgs.msg import JointState
+from panda_ros_msgs.msg import JointPose, HybridPose
+
+from authoring_msgs.msg import Action,Command
+import authoring_msgs.msg
+
+import threading
+
+REFERENCE_FRAME='panda_link0'
+CLIENT_ACTIVE=1
+SIM = True
+EXEC = False
+class Planner(object):
+    def __init__(self):
+        self._tl = tf.TransformListener()
+        self._br = tf.TransformBroadcaster()
+
+        self._plan = []
+        self._running = False
+        self._sim = False
+        self._skip = False
+        self._act = False
+        self._integrator = Twist()
+        self._freq = 1000.
+        self._force = Vector3()
+        self._inserting_factor = None
+        self._plan_z = None
+        self._current_joint = None
+        self._gripper_acting = False
+        self._gripper_done = False
+        self._pause = False
+        self._current_action_progress = []
+        self._angle_move = False
+        self._plan_following_thread = threading.Thread()
+
+        rospy.sleep(2.5) # sleep a bit to make sure the TF cache is filled
+        self._path_pub = rospy.Publisher("/planner/path", Path, queue_size=0)
+        self._camera_pub = rospy.Publisher("/panda/camera_control", Bool, queue_size=0)
+        self._goal_pub = rospy.Publisher("/planner/goal_pose", HybridPose, queue_size=5)
+        self._cam_goal_pub = rospy.Publisher("/planner/cam_goal_pose", PoseStamped, queue_size=5)
+        self._command_sub = rospy.Subscriber("/parser/command", Command, self.on_command)
+        self._event_pub = rospy.Publisher("/event",String,queue_size = 5)
+        self._command_pub = rospy.Publisher("/planner/command", String, queue_size=1)
+        self._force_sub = rospy.Subscriber("/panda/wrench", Wrench, self.on_force)
+        self._event_sub = rospy.Subscriber("/event", String, self.on_event)
+        self._fd_sub = rospy.Subscriber("/fd/button", Bool, self.on_fd)
+
+        #For angle control
+        self._panda_angle_sub = rospy.Subscriber("/viz/joint_states", JointState, self.on_state, queue_size=1)
+        self._angle_pub = rospy.Publisher("/planner/joint_pose", JointPose, queue_size = 5)
+
+        #Client stuff
+        self._client = actionlib.SimpleActionClient('mover_server', authoring_msgs.msg.AuthoringAction)
+
+    def on_state(self, msg):
+        self._current_joint = msg
+
+    def on_force(self, msg):
+        self._force = msg.force
+
+    def on_fd(self, msg):
+        if msg.data:
+            self.next_sub_action()
+            
+    def on_event(self, msg):
+        if msg.data == "pause":
+            self._pause = True
+        if msg.data == "play" or msg.data == "stop_edit":
+            self._pause = False
+        if msg.data == "act":
+            self._act = True
+        if msg.data == "skip":
+            self._skip = True
+        if msg.data == "grasping_done" or msg.data == "releasing_done":
+            self._gripper_done = True
+            self._gripper_acting = False
+
+    #P is Ros Pose, q is Ros Quaternion
+    def get_pose_rot(self, pose, q):
+        p = pose.position
+        o = pose.orientation
+        
+        rot = PyKDL.Rotation.Quaternion(q.x,q.y,q.z,q.w)
+        v = PyKDL.Vector(p.x,p.y,p.z)
+        orientation = PyKDL.Rotation.Quaternion(o.x,o.y,o.z,o.w)
+        v_rot = rot.Inverse()*v
+        q_rot = (rot.Inverse()*orientation).GetQuaternion()
+        pose.position.x = v_rot[0]
+        pose.position.y = v_rot[1]
+        pose.position.z = v_rot[2]
+        pose.orientation.x = q_rot[0]
+        pose.orientation.y = q_rot[1]
+        pose.orientation.z = q_rot[2]
+        pose.orientation.w = q_rot[3]
+
+    def add_subaction(self, action, sim, plan = None, sub_action = False):
+        if plan is None:
+            plan = self._plan
+        rot = tf.transformations.quaternion_from_euler(0,0,0)
+        action.sim = Bool(sim)
+        action.finished = Bool(False)
+
+        if action.type == action.MOVE or action.type == action.RELEASE:
+            plan.append(action)
+        if action.type == action.GRASP or action.type == action.MOVE_FORCE:
+            bias = copy.deepcopy(action)
+            bias.type = bias.BIAS_FORCES
+            plan.append(bias)
+            plan.append(action)
+
+        if action.type == action.PULL:
+            a = copy.deepcopy(action)
+            a.type = a.MOVE
+            a.pose.constraint_frame = copy.deepcopy(a.pose.pose.orientation)
+            self.get_pose_rot(a.pose.pose,a.pose.pose.orientation)
+            up = copy.deepcopy(a)
+            up.pose.pose.position.z += 0.05
+            bias = copy.deepcopy(a)
+            bias.type = bias.BIAS_FORCES
+            grasp = copy.deepcopy(a)
+            grasp.type = grasp.GRASP
+            pull = copy.deepcopy(up)
+            up.pose.pose.position.z += 0.05
+            pull.pose.sel_vector = [0,0,0,1,1,1]
+            pull.pose.wrench.force.z = 10
+            release = copy.deepcopy(grasp)
+            release.type = release.RELEASE
+            safe = copy.deepcopy(a)
+            safe.pose.pose.position.z +=.1
+            plan.append(up)
+            plan.append(a)
+            plan.append(bias)
+            plan.append(grasp)
+            plan.append(pull)
+            plan.append(release)
+            plan.append(safe)
+        
+        if action.type == action.PUSH:
+            a = copy.deepcopy(action)
+            a.type = a.MOVE
+            a.pose.constraint_frame = copy.deepcopy(a.pose.pose.orientation)
+            self.get_pose_rot(a.pose.pose,a.pose.pose.orientation)
+            up = copy.deepcopy(a)
+            up.pose.pose.position.z += 0.05
+            bias = copy.deepcopy(a)
+            bias.type = bias.BIAS_FORCES
+            grasp = copy.deepcopy(a)
+            grasp.type = grasp.GRASP
+            push = copy.deepcopy(a)
+            push.pose.sel_vector = [0,0,0,1,1,1]
+            push.pose.wrench.force.z = -10
+            push.pose.pose.position.z -= .05
+            release = copy.deepcopy(grasp)
+            release.type = release.RELEASE
+            safe = copy.deepcopy(up)
+            plan.append(up)
+            plan.append(a)
+            plan.append(bias)
+            plan.append(grasp)
+            plan.append(push)
+            plan.append(release)
+            plan.append(safe)
+
+        if action.type == action.MOVE_OBJECT:
+            a1 = Action(sim=Bool(sim))
+            a1.type = a1.PICK
+            a1.item = String(action.item.data.split('-')[0])
+            a1.poses.header = action.poses.header
+            a1.poses.poses.append(action.poses.poses[0])
+            self.add_subaction(a1,sim,plan,sub_action=True)
+            a2 = Action(sim=Bool(sim))
+            a2.type = a2.PLACE
+            if "box" in action.item.data:
+                a2.type = a2.DROP
+            a2.item = a1.item
+            a2.poses.header = action.poses.header
+            a2.poses.poses.append(action.poses.poses[1])
+            self.add_subaction(a2,sim,plan,sub_action=True)
+
+        if action.type == action.MOVE_UNKNOWN:
+            move_to = Action(sim=Bool(sim))
+            move_to.finished.data = False
+            move_to.type = move_to.MOVE
+            move_to.pose = action.poses.poses[0]
+            move_above = copy.deepcopy(move_to)
+            move_close = copy.deepcopy(move_to)
+            move_above.pose.pose.position.z+=.15
+            move_close.pose.pose.position.z+=.05
+            move_to.type = move_to.MOVE_FORCE
+            move_to.pose.pose.position.z-=.015
+            grasp = Action(sim=Bool(sim))
+            grasp.finished.data = False
+            grasp.type = grasp.GRASP
+            grasp.item = String(action.item.data.split("_")[0])
+
+            bias = copy.deepcopy(action)
+            bias.type = bias.BIAS_FORCES
+
+            plan.append(move_above)
+            plan.append(bias)
+            plan.append(move_close)
+            plan.append(move_to)
+            plan.append(grasp)
+            plan.append(move_above)
+
+            move_to = Action(sim=Bool(sim))
+            move_to.finished.data = False
+            move_to.type = move_to.MOVE
+            move_to.pose = action.poses.poses[1]
+            move_above = copy.deepcopy(move_to)
+            move_close = copy.deepcopy(move_to)
+            move_close.pose.pose.position.z+=.1
+            move_to.type = move_to.MOVE_FORCE
+            move_above.pose.pose.position.z+=.15
+            move_to.pose.pose.position.z-=.01
+            release = Action(sim=Bool(sim))
+            release.finished.data = False
+            release.type = release.RELEASE
+            release.item = String(action.item.data.split("_")[1])
+
+            plan.append(move_above)
+            plan.append(bias)
+            plan.append(move_close)
+            plan.append(move_to)
+            plan.append(release)
+            plan.append(move_above)
+
+        if action.type == action.RESET:
+            move = Action(sim=Bool(sim))
+            move.finished.data = False
+            move.type = move.MOVE_ANGLE
+            move.joint_pose = [0., -0.34, 0., -1.66, 0., 1.32, 0.8]
+            release = Action(sim=Bool(sim))
+            release.finished.data = False
+            release.type = release.RELEASE
+            plan.append(move)
+            plan.append(release)
+
+        if action.type == action.MOVE_ANGLE:
+            move = Action(sim=Bool(sim))
+            move.finished.data = False
+            move.type = move.MOVE_ANGLE
+            move.joint_pose = action.joint_pose
+            plan.append(move)
+
+        if action.type == action.VIEW:
+            move = Action(sim=Bool(sim))
+            move.finished.data = False
+            move.type = move.VIEW
+            move.pose = action.pose
+            plan.append(move)
+
+        if action.type == action.CAMERA_VELOCITY:
+            move = Action(sim=Bool(sim))
+            move.finished.data = False
+            move.type = move.CAMERA_VELOCITY
+            move.velocity  = action.velocity
+            plan.append(move)
+
+        if action.type == action.PICK:
+            #print("pick")
+            move_above = Action(sim=Bool(sim))
+            move_above.finished.data = False
+            move_above.type = move_above.MOVE
+            move_above.pose = action.poses.poses[0]
+            move_to = copy.deepcopy(move_above)
+            move_close = copy.deepcopy(move_above)
+            move_to.type = move_to.MOVE_FORCE
+            move_above.pose.pose.position.z+=.08
+            move_close.pose.pose.position.z+=.025
+            move_to.pose.pose.position.z -= .01
+            grasp = Action(sim=Bool(sim))
+            grasp.finished.data = False
+            grasp.type = grasp.GRASP
+            grasp.item = action.item
+
+            bias = copy.deepcopy(action)
+            bias.type = bias.BIAS_FORCES
+
+            plan.append(move_above)
+            plan.append(bias)
+            plan.append(move_close)
+            plan.append(move_to)
+            plan.append(grasp)
+            #if sub_action:
+            pull = copy.deepcopy(move_above)
+            #pull.pose.sel_vector=[0,0,1,1,1,1]
+            #pull.pose.wrench.force.z = 20 
+            plan.append(pull)
+            
+        if action.type == action.PLACE or action.type == action.DROP:
+            #print("place")
+            bias = copy.deepcopy(action)
+            bias.type = bias.BIAS_FORCES
+
+            move_above = Action(sim=Bool(sim))
+            move_above.finished.data = False
+            move_above.type = move_above.MOVE
+            move_above.pose = action.poses.poses[0]
+            move_to = copy.deepcopy(move_above)
+            move_above.pose.pose.position.z+=.08
+            if action.type == action.PLACE:
+                move_to.type = move_to.MOVE_FORCE
+            else:
+                move_to.pose.pose.position.z+=.02
+            move_to.pose.pose.position.z+=.0
+            move_safe = copy.deepcopy(move_above)
+            release = Action(sim=Bool(sim))
+            release.finished.data = False
+            release.type = release.RELEASE
+            release.item = action.item
+            print(move_to.pose.pose)
+
+            release_forces = copy.deepcopy(move_to)
+            release_forces.type = bias.RELEASE_FORCE
+
+            plan.append(move_above)
+            plan.append(bias)
+            plan.append(move_to)
+            plan.append(release_forces)
+            plan.append(release)
+            plan.append(move_safe)
+
+        if action.type == action.MOVE_TO_CONTACT:
+            bias = copy.deepcopy(action)
+            bias.type = bias.BIAS_FORCES
+
+            move_above = Action(sim=Bool(sim))
+            move_above.finished.data = False
+            move_above.type = move_above.MOVE
+            move_above.pose = action.poses.poses[0]
+            move_to = copy.deepcopy(move_above)
+            move_to.type = move_to.MOVE_FORCE
+            move_above.pose.pose.position.z+=.1
+            move_to.pose.pose.position.z -= .003
+            plan.append(move_above)
+            plan.append(bias)
+            plan.append(move_to)
+
+        if action.type == action.INSPECT:
+            #print("inspect")
+            move_above = Action(sim=Bool(sim))
+            move_above.finished.data = False
+            move_above.type = move_above.VIEW
+            move_above.poses = copy.deepcopy(action.poses)
+            move_above.poses.poses[0].position.z += .35
+            move_above.item = action.item
+            self.add_subaction(move_above,sim,plan,sub_action=True)
+            wait = Action(sim=Bool(sim))
+            wait.finished.data = False
+            wait.type = wait.WAIT
+            wait.item = action.item
+            plan.append(wait)
+        
+        if action.type == action.STOP:
+            #print("stop")
+            move = Action(sim=Bool(sim))
+            move.finished.data = False
+            move.type = move.MOVE
+            move.pose = action.poses.poses[0]
+            plan.append(move)
+
+        #if action.type == action.PUSH:
+        #    # "Push"
+        #    grasp = Action(sim=Bool(sim))
+        #    grasp.finished.data = False
+        #    grasp.type = grasp.GRASP
+        #    grasp.item = String("none")
+        #    move_above = Action(sim=Bool(sim))
+        #    move_above.finished.data = False
+        #    move_above.type = move_above.MOVE
+        #    move_above.pose = action.poses.poses[0]
+        #    move_to = copy.deepcopy(move_above)
+        #    move_above.pose.pose.position.z+=.15
+        #    move_to.pose.pose.position.z+=.02
+        #    move_safe = copy.deepcopy(move_above)
+        #    release = Action(sim=Bool(sim))
+        #    release.finished.data = False
+        #    release.type = release.RELEASE
+        #    release.item = String("none")
+        #    plan.append(move_above)
+        #    plan.append(grasp)
+        #    plan.append(move_to)
+        #    plan.append(move_safe)
+        #    plan.append(release)
+        
+        if action.type == action.SCREW:
+            #print("screw")
+            #angle = 3*np.pi/5.
+            angle = .95*np.pi/2.
+            rot = tf.transformations.quaternion_from_euler(0,0,-angle)
+            q_plus = Quaternion(rot[0],rot[1],rot[2],rot[3])
+            rot = tf.transformations.quaternion_from_euler(0,0,angle)
+            q_minus = Quaternion(rot[0],rot[1],rot[2],rot[3])
+ 
+            move_above = Action(sim=Bool(sim))
+            move_above.finished.data = False
+            move_above.type = move_above.MOVE
+            move_above.pose = action.poses.poses[0]
+            move_to = copy.deepcopy(move_above)
+            move_above.pose.pose.position.z+=.15
+            move_to.pose.pose.position.z+=.005
+
+            grasp = Action(sim=Bool(sim))
+            grasp.finished.data = False
+            grasp.type = grasp.GRASP
+            grasp.item = action.item
+
+            release = copy.deepcopy(grasp)
+            release.type = release.RELEASE
+
+            plus = copy.deepcopy(move_to)
+            plus.pose.pose.position.z-=.002
+            plus.pose.pose.orientation = q_plus
+            minus = copy.deepcopy(move_to)
+            minus.pose.pose.orientation = q_minus
+            plus.pose.sel_vector = [0,0,0,1,1,1]
+            plus.pose.wrench.force.z=-5
+
+            bias = copy.deepcopy(action)
+            bias.type = bias.BIAS_FORCES
+            
+            plan.append(move_above)
+            plan.append(minus) 
+            plan.append(bias)
+            plan.append(grasp)
+            plan.append(plus)
+            plan.append(release)
+            plan.append(minus)
+            plan.append(bias)
+            plan.append(grasp)
+            plan.append(plus)
+            plan.append(release)
+            plan.append(move_above)
+        
+        if action.type == action.UNSCREW:
+            #print("unscrew")
+            #angle = 3*np.pi/5.
+            angle = .95*np.pi/2.
+            rot = tf.transformations.quaternion_from_euler(0,0,-angle)
+            q_plus = Quaternion(rot[0],rot[1],rot[2],rot[3])
+            rot = tf.transformations.quaternion_from_euler(0,0,angle)
+            q_minus = Quaternion(rot[0],rot[1],rot[2],rot[3])
+ 
+            move_above = Action(sim=Bool(sim))
+            move_above.finished.data = False
+            move_above.type = move_above.MOVE
+            move_above.pose = action.poses.poses[0]
+            move_to = copy.deepcopy(move_above)
+            move_above.pose.pose.position.z+=.15
+            move_to.pose.pose.position.z-=.00
+
+            grasp = Action(sim=Bool(sim))
+            grasp.finished.data = False
+            grasp.type = grasp.GRASP
+            grasp.item = action.item
+
+            release = copy.deepcopy(grasp)
+            release.type = release.RELEASE
+
+            plus = copy.deepcopy(move_to)
+            plus.pose.pose.orientation = q_plus
+            plus.pose.pose.position.z += .002
+            #plus.type = plus.MOVE_FORCE
+            #plus.pose.wrench.force.z = -5
+            minus = copy.deepcopy(move_to)
+            minus.pose.pose.orientation = q_minus
+            minus.pose.pose.position.z+=.002
+            minus.pose.sel_vector = [0,0,1,1,1,1]
+            #minus.pose.wrench.force.z=5
+            
+            bias = copy.deepcopy(action)
+            bias.type = bias.BIAS_FORCES
+            
+            plan.append(move_above)
+            plan.append(plus)
+            plan.append(bias)
+            plan.append(grasp)
+            plan.append(minus)
+            plan.append(release)
+            plan.append(plus)
+            plan.append(bias)
+            plan.append(grasp)
+            plan.append(minus)
+            plan.append(release)
+            plan.append(move_above)
+
+        if action.type == action.WIPE:
+            max_off=.05
+            grasp = action.poses.poses[0]
+            p0 = action.poses.poses[1]
+            p1 = action.poses.poses[2]
+            p2 = action.poses.poses[3]
+            p3 = action.poses.poses[4]
+            a1 = Action(sim=Bool(sim))
+            pick = Action(sim=Bool(sim))
+            pick.type = pick.PICK
+            pick.poses.header = grasp.header
+            pick.poses.poses.append(grasp)
+            self.add_subaction(pick,sim,plan,sub_action=True)
+
+            bias = copy.deepcopy(action)
+            bias.type = bias.BIAS_FORCES
+
+            move_above = Action(sim=Bool(sim))
+            move_above.pose.constraint_frame.w = 1
+            move_above.type = move_above.MOVE
+            move_above.finished.data = False
+            move_above.pose = copy.deepcopy(p0)
+            move_above.pose.pose.position.z+=.10
+            plan.append(move_above)
+            plan.append(bias)
+
+            #distance of the left and right sides of the 'rectangle'
+            d_l = self.get_distance(p0.pose,p3.pose)
+            d_r = self.get_distance(p1.pose,p2.pose)
+            #number of passes required to ensure that a side is wipped fully
+            n_l = np.ceil(d_l/max_off)
+            n_r = np.ceil(d_r/max_off)
+            n = max(n_l,n_r)
+            p_l=[]
+            p_r=[]
+            for i in range(int(n+1)):
+                p_l.append(self.point_toward(p0.pose,p3.pose,i/n))
+                p_r.append(self.point_toward(p1.pose,p2.pose,i/n))
+            base_move = Action(sim=Bool(sim))
+            base_move.pose.constraint_frame.w = 1
+            base_move.type = base_move.MOVE_FORCE
+            base_move.finished.data = False
+            for i in range(int(n)):
+                move = copy.deepcopy(base_move)
+                if i == 0:
+                    move.type = move.MOVE_FORCE
+                move.pose = p_l[i] if not i%2 else p_r[i]
+                plan.append(move)
+                move = copy.deepcopy(base_move)
+                move.pose = p_r[i] if not i%2 else p_l[i]
+                plan.append(move)
+
+            move_above = copy.deepcopy(move_above)
+            move_above.pose = copy.deepcopy(move.pose)
+            move_above.pose.pose.position.z += .10
+            move_above.pose.constraint_frame.w = 1
+            plan.append(move_above)
+            release = Action(sim=Bool(sim))
+            release.type = release.PLACE
+            release.poses.header = grasp.header
+            release.poses.poses.append(grasp)
+            move_above = Action(sim=Bool(sim))
+            move_above.finished.data = False
+            move_above.type = move_above.MOVE
+            move_above.pose.constraint_frame.w = 1
+            move_above.pose = grasp
+            move_to = copy.deepcopy(move_above)
+            move_above.pose.pose.position.z+=.05
+            move_to.type = move_to.MOVE_FORCE
+            move_to.pose.pose.position.z-=.1
+            move_safe = copy.deepcopy(move_above)
+            release = Action(sim=Bool(sim))
+            release.finished.data = False
+            release.type = release.RELEASE
+            release.item = action.item
+            plan.append(move_above)
+            plan.append(bias)
+            plan.append(move_to)
+            plan.append(release)
+            plan.append(move_safe)
+
+        if not sub_action:
+            #print(action)
+            finished_action = copy.deepcopy(action)
+            finished_action.finished = Bool(True)
+            plan.append(finished_action)
+
+    def point_toward(self, p0, p1, ratio):
+        p = HybridPose()
+        #Assume frame are in reference frame
+        p.header.frame_id = REFERENCE_FRAME
+        p.sel_vector = [1,1,1,0,0,0]
+        p.constraint_frame.w = 1
+        #Assume all points have same orientation
+        p.pose.orientation = p0.orientation
+        p.pose.position.x += p0.position.x + ratio * (p1.position.x-p0.position.x)
+        p.pose.position.y += p0.position.y + ratio * (p1.position.y-p0.position.y)
+        p.pose.position.z += p0.position.z + ratio * (p1.position.z-p0.position.z)
+        return p
+
+    def get_distance(self, p0, p1):
+        return np.sqrt((p0.position.x-p1.position.x)**2+(p0.position.y-p1.position.y)**2+(p0.position.z-p1.position.z)**2)
+        
+    def get_type(self,action):
+        if action.type == action.PICK:
+            return "Pick"
+        if action.type == action.SCREW:
+            return "Tighten"
+        if action.type == action.UNSCREW:
+            return "Loosen"
+        if action.type == action.PLACE:
+            return "Place"
+        if action.type == action.WIPE:
+            return "Wipe"
+        if action.type == action.MOVE:
+            return "Move"
+        if action.type == action.MOVE_TO_CONTACT:
+            return "Move to"
+        if action.type == action.GRASP:
+            return "Grasp"
+        if action.type == action.RELEASE:
+            return "Release"
+        if action.type == action.RELEASE_FORCE:
+            return "Release Force"
+        if action.type == action.MOVE_OBJECT:
+            return "Move"
+        if action.type == action.VIEW:
+            return "View"
+        if action.type == action.INSPECT:
+            return "Inspect"
+        if action.type == action.MOVE_FORCE:
+            return "Move force"
+        if action.type == action.PUSH:
+            return "Push"
+        if action.type == action.INSERT:
+            return "Insert"
+        if action.type == action.MOVE_UNKNOWN:
+            return "Move"
+        if action.type == action.BIAS_FORCES:
+            return "Bias"
+        if action.type == action.PULL:
+            return "Pull"
+        if action.type == action.DROP:
+            return "Drop"
+        if action.type == action.RESET:
+            return "Reset"
+        if action.type == action.RELEASE_FORCE:
+            return "Release force"
+        if action.type == action.MOVE_ANGLE:
+            return "move angle"
+        return ""
+
+    def cancel_motion(self):
+        if self._client.get_state() == CLIENT_ACTIVE:
+            self._client.cancel_goal()
+            print("waiting for cancelling")
+            self._client.wait_for_result()
+            self._plan_following_thread.join()
+            print("done cancelling")
+
+    def on_command(self,msg):
+        self._pause = False
+        self._type = msg.type
+        starting = 0
+        if msg.type == msg.SIM:
+            self._sim = True
+            self._event_pub.publish(String("start_sim"))
+            plan = []
+            self._current_action_progress = []
+            for sub_action in msg.core_action:
+                self.add_subaction(sub_action,SIM,plan)
+            self._plan = plan
+            self._running = True
+
+        if msg.type == msg.VIZ:
+            plan = []
+            for sub_action in msg.core_action:
+                self.add_subaction(sub_action,SIM,plan)
+            self._plan = plan
+
+        if msg.type == msg.EXEC:
+            self._sim = False
+            self._event_pub.publish(String("start_exec"))
+            self._event_pub.publish("display_message;Robot is Moving")
+            plan = []
+            self._current_action_progress = []
+            for sub_action in msg.core_action:
+                self.add_subaction(sub_action,EXEC,plan)
+            self._plan = plan
+            self._running = True
+                
+        if msg.type == msg.EDIT:
+            new_plan = []
+            if len(msg.core_action) == 1:
+                return
+            for sub_action in msg.core_action:
+                self.add_subaction(sub_action,self._plan[0].sim.data,new_plan)
+            for action_done in self._current_action_progress:
+                if action_done.type == new_plan[0].type and action_done.item == new_plan[0].item:
+                    starting+=1
+            self._plan = new_plan
+
+        if msg.type != msg.VIZ or self._plan_following_thread.is_alive():
+            #print("canceling")
+            #self.cancel_motion()
+            pass
+        if msg.type != msg.VIZ:
+            self._plan_following_thread = threading.Thread(target=self.run_plan, args=(starting,))
+            self._plan_following_thread.start()
+        #self.update_plan()
+
+    def get_hybrid_pose(self, pose):
+        h = HybridPose()
+        pose = self._tl.transformPose(REFERENCE_FRAME, pose)
+        h.pose = pose.pose
+        h.header = pose.header
+        h.sel_vector = [1,1,1,1,1,1]
+        h.constraint_frame.w = 1
+        return h
+
+    def run_plan(self,starting):
+        print("running plan")
+        result = False
+
+        for action in self._plan[starting:]:
+            if(self.get_type(action) == ""):
+                print("unknown action" + str(action))
+            print("At action "+self.get_type(action))
+            if action.finished.data:
+                event = "action_finished;"+self.get_type(action)
+                if self.get_type(action) != "Reset":
+                    event+=":"+action.item.data
+                self._event_pub.publish(String(event))
+                continue
+            goal = authoring_msgs.msg.AuthoringGoal()
+            goal.goal = action
+            self._client.send_goal(goal)
+            print(self._client.wait_for_result())
+            result = self._client.get_result().success.data
+            if not result:
+                self._event_pub.publish("display_message;Failed Plan")
+                self._plan = []
+                goal = authoring_msgs.msg.AuthoringGoal()
+                action = Action()
+                action.type = action.RESET
+                self.add_subaction(action, False)
+                self.run_plan(0)
+                break
+            self._current_action_progress.append(action)
+
+        self._event_pub.publish(String("motion_finished"))
+
+    def run(self):
+        rospy.spin()
+ 
+    def bound(self, val, b):
+        return min(max(val,-b),b)
+
+    def vectorise(self, val):
+        try:
+            return [val.x, val.y, val.z, val.w]
+        except:
+            return [val.x, val.y, val.z]
+    
+    def normalise_angle(self, angle):
+        return [(a+np.pi)%(2*np.pi)-np.pi for a in angle]
+
+    def display_path(self):
+        path = Path()
+        path.header.frame_id = REFERENCE_FRAME
+        ee_frame = 'sim_panda_gripper'
+        (trans,rot) = self._tl.lookupTransform(REFERENCE_FRAME, ee_frame, rospy.Time(0))
+        EE_pose = PoseStamped()
+        EE_pose.pose.position.x = trans[0]
+        EE_pose.pose.position.y = trans[1]
+        EE_pose.pose.position.z = trans[2]
+        EE_pose.pose.orientation.x = rot[0]
+        EE_pose.pose.orientation.y = rot[1]
+        EE_pose.pose.orientation.z = rot[2]
+        EE_pose.pose.orientation.w = rot[3]
+        EE_pose.header.frame_id = REFERENCE_FRAME
+        path.poses = [EE_pose]
+        for action in self._plan:
+            if (action.type == action.MOVE or action.type == action.MOVE_FORCE or action.type == action.VIEW or action.type == action.MOVE_TO_CONTACT or action.type == action.INSERT) and not action.finished.data:
+                path.poses.append(action.pose)
+            else:
+                pass
+        self._path_pub.publish(path)
+
+ 
+
+    def signal_handler(self, signal, frame):
+        #publish empty path
+        #if self._plan_following_thread is not None:
+        #    self._plan_following_thread.join
+        sys.exit(0)
+
+if __name__ == "__main__":
+    rospy.init_node("planner")
+    planner = Planner()
+    signal.signal(signal.SIGINT, planner.signal_handler)
+    planner.run()
+

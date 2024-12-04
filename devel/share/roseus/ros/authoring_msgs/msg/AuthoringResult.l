@@ -1,0 +1,1 @@
+/workspace/devel/.private/authoring_msgs/share/roseus/ros/authoring_msgs/msg/AuthoringResult.l

@@ -1,0 +1,174 @@
+#!/usr/bin/env python
+import numpy as np
+import math
+import rospy
+import signal
+import sys
+from geometry_msgs.msg import PoseStamped, Pose, Twist, Quaternion, TransformStamped
+from sensor_msgs.msg import CameraInfo
+from std_msgs.msg import String
+import tf
+import tf2_ros
+from tf.transformations import *
+import copy
+
+REFERENCE_FRAME='panda_link0'
+
+class VirtualCamera(object):
+    def __init__(self):
+        self._br = tf2_ros.TransformBroadcaster()
+        self._tfBuffer = tf2_ros.Buffer()
+        self._tl = tf2_ros.TransformListener(self._tfBuffer)
+        rospy.sleep(.5)
+
+        self._info_pub = rospy.Publisher("/virtual_camera/camera_info",CameraInfo,queue_size=1,latch=True)
+        info = CameraInfo()
+        info.header.frame_id = "camera1"
+        info.height = 480
+        info.width = 640
+        info.distortion_model = 'plumb_bob'
+        info.D = [0]
+        info.K = [500.0, 0.0, 320, 0.0, 500.0, 240.0, 0.0, 0.0, 1.0]
+        info.R = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+        info.P =  [500.0, 0.0, 320, 0.0, 0.0, 500, 240, 0.0, 0.0, 0.0, 1.0, 0.0]
+        info.roi.do_rectify = False 
+        self._info_low_res = copy.deepcopy(info)
+        info.height = 1536
+        info.width = 2048
+        info.distortion_model = 'rational_polynomial'
+        info.D = [0.5248579382896423, -2.5943498611450195, 0.0008818571805022657, -0.000306136003928259, 1.4509135484695435, 0.4030783474445343, -2.42022705078125, 1.3811763525009155]
+        info.K = [976.9754638671875, 0.0, 1018.8711547851562, 0.0, 976.9026489257812, 780.8445434570312, 0.0, 0.0, 1.0]
+        info.R = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+        info.P =  [976.9754638671875, 0.0, 1018.8711547851562, 0.0, 0.0, 976.9026489257812, 780.8445434570312, 0.0, 0.0, 0.0, 1.0, 0.0]
+        info.roi.do_rectify = False 
+        self._info_high_res = copy.deepcopy(info)
+        self._info_pub.publish(self._info_high_res)
+        self._use_external_camera = False
+        self._last_t = None
+        self._moving = False
+        self._locked = False
+        self._event_sub = rospy.Subscriber("/event",String, self.on_event)
+        self._command_sub = rospy.Subscriber("/gui/command",String, self.on_command)
+        self._sim = False
+        self._camera_t = None
+        self._flying = False
+        self._real_camera_t = None
+
+        self._pre_exec_t = None
+        self._editing = False
+
+
+    def on_event(self, msg):
+        if msg.data == "start_edit":
+            self._last_t = self._pre_exec_t
+            self.publish_camera_pose()
+        if msg.data == "stop_edit":
+            self.default_camera()
+        if msg.data == "start_exec":
+            self._moving = True
+            self._flying = False
+            self._pre_exec_t = self._tfBuffer.lookup_transform("panda_link0","camera1", rospy.Time(0))
+        if msg.data == "start_sim":
+            self._real_camera_t = self._tfBuffer.lookup_transform("panda_link0","internal_camera_base", rospy.Time(0))
+            self._moving = True
+            self._sim = True
+            if not self._locked:
+                t = TransformStamped()
+                t.child_frame_id = "camera1"
+                t.header.frame_id = "external_view"
+                t.transform.rotation.w = 1
+                self._last_t = t
+                print("set last t")
+
+        if msg.data == "motion_finished":
+            self._sim = False
+            self._moving = False
+
+    def on_command(self, msg):
+        if msg.data == "lock":
+            self._locked = True
+            self._flying = False
+            self._last_t = self._tfBuffer.lookup_transform("panda_link0","camera1", rospy.Time.now())
+            self.publish_camera_pose()
+
+        if msg.data == "unlock":
+            self._locked = False
+            self._flying = True
+            self.default_camera()
+            t = TransformStamped()
+            t.child_frame_id = "camera1"
+            t.header.frame_id = "external_view"
+            t.transform.rotation.w = 1
+            self._last_t = t
+            
+        if msg.data == "init_gui":
+            self._flying = False
+
+            
+    def publish_camera_pose(self):
+        if self._sim:
+            #print("use real")
+            #print(self._real_camera_t)
+            self._real_camera_t.header.stamp = rospy.Time.now()
+            self._br.sendTransform(self._real_camera_t)
+        else:
+            t = TransformStamped()
+            t.transform.rotation.w = 1
+            t.header.stamp = rospy.Time.now()
+            t.header.frame_id = "camera_base"
+            t.child_frame_id = "internal_camera_base"
+            self._br.sendTransform(t)
+        if self._moving or self._locked:
+            self._last_t.header.stamp = rospy.Time.now()
+            self._br.sendTransform(self._last_t)
+            return
+
+        if self._flying:
+            #print("Free flying")
+            try:
+                t = self._tfBuffer.lookup_transform("inv_tag_2","client_camera", rospy.Time(0))
+                coef = 4
+                t.transform.translation.x = coef*t.transform.translation.x
+                t.transform.translation.y = 1.5*coef*t.transform.translation.y
+                t.transform.translation.z = coef*t.transform.translation.z
+                t.header.frame_id = "panda_link0"
+                t.child_frame_id = "camera1"
+                t.header.stamp = rospy.Time.now()
+                self._last_t = t
+                self._br.sendTransform(t)
+                return
+            except: 
+                #print("Tag not found")
+                self._last_t.header.stamp = rospy.Time.now()
+                self._br.sendTransform(self._last_t)
+                return
+
+        self.default_camera()
+
+    def default_camera(self):
+        #Default behavior: internal camera or external if view
+        t = TransformStamped()
+        camera_frame = "internal_rgb_camera_link"
+        if self._sim:
+            camera_frame = "external_view"
+        t.header.frame_id = camera_frame
+        t.transform.rotation.w = 1
+        t.child_frame_id = "camera1"
+        t.header.stamp = rospy.Time.now()
+        self._last_t = t
+        self._br.sendTransform(t)
+
+    def run(self):
+        r = rospy.Rate(10)
+        while not rospy.is_shutdown():
+            self.publish_camera_pose()
+            r.sleep()
+
+    def signal_handler(self, signal, frame):
+        sys.exit()
+
+if __name__ == "__main__":
+    rospy.init_node('virtual_camera')
+    virtual_camera = VirtualCamera()
+    signal.signal(signal.SIGINT, virtual_camera.signal_handler)
+    virtual_camera.run()

@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /workspace/devel/.private/rviz_camera_stream/setup.sh

@@ -1,0 +1,1 @@
+/workspace/devel/.private/panda_ros_msgs/share/panda_ros_msgs/cmake/panda_ros_msgsConfig.cmake

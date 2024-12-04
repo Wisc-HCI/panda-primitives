@@ -1,0 +1,570 @@
+#!/usr/bin/env python
+import numpy as np
+import math
+import rospy
+import signal
+import random
+import sys
+from std_msgs.msg import String, ColorRGBA
+from visualization_msgs.msg import Marker
+from geometry_msgs.msg import PoseStamped, Point, Pose, PoseArray, Quaternion, Twist, TransformStamped
+from authoring_msgs.msg import Action, Command, POI, POIArray
+import tf
+import tf2_ros
+import tf2_geometry_msgs
+import copy
+from threading import Timer
+from tf.transformations import quaternion_from_euler, euler_from_quaternion
+
+REFERENCE_FRAME='panda_link0'
+CAMERA_FRAME='external_rgb_camera_link'
+
+class Tracker(object):
+    def __init__(self):
+        self._tfBuffer = tf2_ros.Buffer()
+        self._tl = tf2_ros.TransformListener(self._tfBuffer)
+        rospy.sleep(0.5) # sleep a bit to make sure the TF cache is filled
+
+        self._br = tf2_ros.TransformBroadcaster()
+
+        self._poi_pub = rospy.Publisher("/world_state/pois", POIArray, queue_size=1, latch=True)
+        self._marker_pub = rospy.Publisher("/viz/meshes", Marker, queue_size=1)
+
+        self._init_pois = None
+        self._objects = []
+        self._moving = False
+        self._moving_timer = None
+
+        self._grasped_object = None
+        self._sim = False
+
+        self._virtual = rospy.get_param('~only_virtual')
+
+        self._cmd = None
+        self._tf_array = []
+
+        self._age_threshold = 2
+
+        self._init_sim = None
+        self._world_type = None
+        if self._virtual:
+            #self.create_sort()
+            self.create_multi()
+
+        self._poi_sub = rospy.Subscriber("pois", POIArray, self.on_pois, queue_size = 1)
+        self._gui_sub = rospy.Subscriber("parser/command", Command, self.on_command, queue_size = 1)
+        self._event_sub = rospy.Subscriber("event", String, self.on_event, queue_size = 1)
+        if not self._virtual:
+            #from pose_detector.msg import DetectedObject,DetectedObjects
+            #self._object_sub = rospy.Subscriber("/detected_objects", DetectedObjects, self.on_objects)
+            #self._object_sub = rospy.Subscriber("/ros_marker/detected_objects", String, self.on_objects)
+            self._object_sub = rospy.Subscriber("/detector/objects", POIArray, self.on_objects)
+
+
+    def get_diff_poses(self, p1, p2):
+        return np.sqrt((p1.position.x-p2.position.x)**2+(p1.position.y-p2.position.y)**2+(p1.position.z-p2.position.z)**2)
+
+    def get_poi_from_object(self, o):
+        pose = PoseStamped()
+        pose.header.frame_id = "internal_rgb_camera_link"
+        pose.pose = o.pose
+        pose = self._tfBuffer.transform(pose,REFERENCE_FRAME)
+        pose.pose.position.z+=.03
+        q = [pose.pose.orientation.x,pose.pose.orientation.y,pose.pose.orientation.z,pose.pose.orientation.w]
+        e = euler_from_quaternion(q)
+        q = quaternion_from_euler(0,0,e[2])
+        #pose.pose.orientation.x = q[0]
+        #pose.pose.orientation.y = q[1]
+        #pose.pose.orientation.z = q[2]
+        #pose.pose.orientation.w = q[3]
+        pose.pose.orientation.x = 0
+        pose.pose.orientation.y = 0
+        pose.pose.orientation.z = 0
+        pose.pose.orientation.w = 1
+        poi = POI()
+        poi.type = o.mesh_name
+        if poi.type.data == "screw":
+            poi.state.data = "unscrewed"
+        poi.pose = pose
+        return poi
+
+    def get_poi_from_string(self, o):
+        try:
+            t = self._tfBuffer.lookup_transform(REFERENCE_FRAME, o, rospy.Time(0))
+        except:
+            return None
+        poi = POI()
+        poi.type.data = o.split("_")[0]
+        poi.id = int(o.split("_")[1])
+        if poi.type.data == "screw":
+            poi.state.data = "unscrewed"
+        poi.pose.header.frame_id = REFERENCE_FRAME
+        poi.pose.pose = self.get_pose_from_trans(t)
+        poi.age = 1
+        return poi
+
+    def update_poi(self, p1, p2):
+        k1 = 1
+        k2 = 1
+        p1.position.x=(k1*p1.position.x+k2*p2.position.x)/(k1+k2)
+        p1.position.y=(k1*p1.position.y+k2*p2.position.y)/(k1+k2)
+        p1.position.z=(k1*p1.position.z+k2*p2.position.z)/(k1+k2)
+
+        p1.orientation = p2.orientation
+
+    def testFilter(self,o,newPois,minX,maxX,minY,maxY):
+        if not (o.pose.pose.position.x>minX and o.pose.pose.position.x<maxX and o.pose.pose.position.y>minY and o.pose.pose.position.y<maxY):
+                return True
+        toKeep = False
+        for poi in newPois:
+            if self.get_diff_poses(o.pose.pose, poi.pose.pose) < .02:
+                toKeep = True
+        return toKeep            
+    
+    def on_objects(self, msg):
+        if self._moving or self._sim:
+            return
+        for o in self._objects:
+            #Aging
+            if o.age > 0:
+                o.age -= 1
+
+        for poi in msg.poi_array:
+            #poi = self.get_poi_from_object(new_o)
+            #minX = min(minX,poi.pose.pose.position.x)
+            #maxX = max(maxX,poi.pose.pose.position.x)
+            #minY = min(minY,poi.pose.pose.position.y)
+            #maxY = max(maxY,poi.pose.pose.position.y)
+            poi.id = 0
+            for known_poi in self._objects:
+                if poi.type == known_poi.type:
+                    poi.id+=1
+                    if self.get_diff_poses(known_poi.pose.pose, poi.pose.pose) < .02:
+                        self.update_poi(known_poi.pose.pose,poi.pose.pose)
+                        known_poi.state = poi.state
+                        if known_poi.age<2:
+                            known_poi.age = min(known_poi.age+2,2)
+                        break
+            else:
+                print("new object")
+                poi.age = 1
+                self._objects.append(poi)
+
+
+        #QR code with unique id
+        #poi = POI()
+        #for new_o in msg.data.split(","):
+        #    for o in self._objects:
+        #        if o.type.data+"_"+str(o.id) == new_o:
+        #            if o.age < 252:
+        #                o.age+=2
+        #            break
+        #    else:
+        #        p = self.get_poi_from_string(new_o)
+        #        if p is not None:
+        #            self._objects.append(p)
+        #self._objects[:] = [o for o in self._objects if self.testFilter(o,newPois,minX,maxX,minY,maxY)]
+        #self._objects = newPois
+        
+
+    def on_pois(self, msg):
+        if self._init_pois is not None:
+            return
+        self._init_pois = []
+        for p in msg.poi_array:
+            p.age = self._age_threshold
+            self._init_pois.append(p)
+        self.publish_pois()
+
+    def on_simulated_objects(self, msg):
+        self._init_sim = msg.poi_array
+        for p in msg.poi_array:
+            self._objects.append(copy.deepcopy(p))
+
+    def on_command(self, msg):
+        self._cmd = msg
+
+    def reset_moving(self):
+        self._moving = False
+        self._moving_timer = None
+
+    def on_event(self, msg):
+        event = msg.data.split(';')
+        if event[0] == "start_sim":
+            self._sim = True
+        if event[0] == "reset_world_screws":
+            self._world_type = "screws"
+            print("resetting")
+            self._objects = []
+            for poi in self._init_sim:
+                self._objects.append(copy.deepcopy(poi))
+                
+        if event[0] == "reset_world_sort":
+            self.create_sort()
+                             
+        if event[0] == "reset_world_kit":
+            self.create_kit()
+
+        if event[0] == "reset_world_assembly":
+            self.create_assembly()
+
+        if event[0] == "reset_world_multi":
+            self.create_multi()
+            
+        if event[0] == "grasped":
+            self._grasped_object = event[1]
+            print("grasping "+self._grasped_object)
+        if event[0] == "released":
+            self._grasped_object = None
+
+        if event[0] == "start_exec":
+            self._moving = True
+            if self._moving_timer is not None:
+                self._moving_timer.cancel()
+                self._moving_timer = None
+        if event[0] == "motion_finished":
+            self._moving_timer = Timer(1.0, self.reset_moving)
+            self._moving_timer.start()
+            if self._sim:
+                self._sim = False
+                self._grasped_object = None
+            
+            self.publish_pois()
+        
+        if event[0] == "action_finished":
+            a = event[1].split(":")[0]
+            if a == "Reset":
+                return
+            if a == "Tighten":
+                item_type = event[1].split(":")[1].split("_")[0]
+                item_id = int(event[1].split(":")[1].split("_")[1])
+                for poi in self._objects:
+                    if poi.type.data == item_type and poi.id == item_id:
+                        poi.state = String("screwed")
+                        return
+            if a == "Loosen":
+                item_type = event[1].split(":")[1].split("_")[0]
+                item_id = int(event[1].split(":")[1].split("_")[1])
+                for poi in self._objects:
+                    if poi.type.data == item_type and poi.id == item_id:
+                        poi.state = String("unscrewed")
+                        return
+            try:
+                param = event[1].split(":")[1]
+                print("got param")
+            except:
+                param = ""
+            if a == "Move" and "-" in param:
+                print("got move")
+                item1 = self.get_object_from_string(param.split("-")[0])
+                item2 = self.get_object_from_string(param.split("-")[1])
+                if item1.type.data == "top" and item2.type.data == "holder" and item2.state.data == "empty":
+                    item2.state.data = "full"
+                    self._objects = [x for x in self._objects if self.get_name(x) != self.get_name(item1)]
+
+    def create_sort(self):
+        self._world_type = "sort"
+        print("resetting to sort")
+        self._objects = []
+
+        poi_init = POI()
+        poi_init.pose.pose.position.x=.35
+        poi_init.pose.pose.position.y=0
+        poi_init.pose.pose.position.z=.08
+        poi_init.pose.pose.orientation.w=1
+        poi_init.pose.header.frame_id = REFERENCE_FRAME
+        poi_init.age = self._age_threshold
+        poi_init.id = -1
+        for t in ["bolt","connector3","fastener"]:
+            poi_init.type = String(t)
+            for i in range(3):
+                dx = (random.random()-.5)*.1
+                dy = (random.random()-.5)*.5
+                p = copy.deepcopy(poi_init)
+                p.pose.pose.position.x+=dx
+                p.pose.pose.position.y+=dy
+                p.id = i
+                self._objects.append(p)
+        
+        poi_init.type = String("box")
+        poi_init.pose.pose.position.x =.65
+        for i in range(3):
+            p = copy.deepcopy(poi_init)
+            p.pose.pose.position.y=.25 - i*.25
+            p.id = i
+            self._objects.append(p)
+
+    def create_kit(self):
+        self._world_type = "kit"
+        print("resetting to kit")
+        self._objects = []
+        poi_init = POI()
+        poi_init.pose.pose.position.x=.35
+        poi_init.pose.pose.position.y=0
+        poi_init.pose.pose.position.z=.08
+        poi_init.pose.pose.orientation.w=1
+        poi_init.pose.header.frame_id = REFERENCE_FRAME
+        poi_init.age = self._age_threshold
+        poi_init.id = -1
+        
+        #Bolts
+        poi_init.type = String("bolt")
+
+        p = copy.deepcopy(poi_init)
+        p.pose.pose.position.y=.3
+        p.id = 0
+        self._objects.append(p)
+        p = copy.deepcopy(poi_init)
+        p.pose.pose.position.y=.25
+        p.id = 1
+        self._objects.append(p)
+        p = copy.deepcopy(poi_init)
+        p.pose.pose.position.y=.25
+        p.pose.pose.position.x=.4
+        p.id = 2
+        self._objects.append(p)
+
+        #Bolts
+        poi_init.type = String("connector3")
+
+        for i in range(2):
+            for j in range(3):
+                p = copy.deepcopy(poi_init)
+                p.pose.pose.position.x=.35+.05*i
+                p.pose.pose.position.y=-.1+j*.1
+                p.id = 3*i+j
+                self._objects.append(p)
+    
+
+        #fasterners
+        poi_init.type = String("fastener")
+
+        p = copy.deepcopy(poi_init)
+        p.pose.pose.position.y=-.3
+        p.id = 0
+        self._objects.append(p)
+        p = copy.deepcopy(poi_init)
+        p.pose.pose.position.y=-.25
+        p.id = 1
+        self._objects.append(p)
+        p = copy.deepcopy(poi_init)
+        p.pose.pose.position.y=-.25
+        p.pose.pose.position.x=.4
+        p.id = 2
+        self._objects.append(p)
+
+    def create_assembly(self):
+        self._world_type = "assembly"
+        print("resetting to assembly")
+        self._objects = []
+
+        poi_init = POI()
+        poi_init.pose.pose.position.x=.375
+        poi_init.pose.pose.position.y=0
+        poi_init.pose.pose.position.z=.08
+        poi_init.pose.pose.orientation.w=1
+        poi_init.pose.header.frame_id = REFERENCE_FRAME
+        poi_init.age = self._age_threshold
+
+        #holders
+        poi_init.type = String("top")
+        for i in range(3):
+            p = copy.deepcopy(poi_init)
+            p.pose.pose.position.y-=.04+i*.06
+            p.id = i
+            self._objects.append(p)
+
+        #holders
+        poi_init.type = String("holder")
+        poi_init.state = String("empty")
+        for i in range(3):
+            p = copy.deepcopy(poi_init)
+            p.pose.pose.position.y+=.04+i*.06
+            p.id = i
+            self._objects.append(p)
+
+    def create_multi(self):
+        self._world_type = "multi"
+        print("resetting to multi")
+        self._objects = []
+
+        poi_init = POI()
+        poi_init.pose.pose.position.x=.0
+        poi_init.pose.pose.position.y=0
+        poi_init.pose.pose.position.z=.008
+        poi_init.pose.pose.orientation.w=1
+        poi_init.pose.header.frame_id = REFERENCE_FRAME
+        poi_init.age = self._age_threshold
+
+        #holders
+        poi_init.type = String("top")
+        #for i in range(3):
+        #    p = copy.deepcopy(poi_init)
+        #    p.pose.pose.position.y-=.4+i*.06
+        #    p.id = i
+        #    self._objects.append(p)
+        p = copy.deepcopy(poi_init)
+        p.pose.pose.position.x=.5
+        p.pose.pose.position.y=.1
+        p.id = 4
+        self._objects.append(p)
+        p = copy.deepcopy(poi_init)
+        p.pose.pose.position.x=.5
+        p.pose.pose.position.y=-.1
+        p.id = 5
+        self._objects.append(p)
+
+        #holders
+        poi_init.type = String("holder")
+        poi_init.state = String("empty")
+        #for i in range(3):
+        #    p = copy.deepcopy(poi_init)
+        #    p.pose.pose.position.y+=.4+i*.06
+        #    p.id = i
+        #    self._objects.append(p)
+
+        p = copy.deepcopy(poi_init)
+        p.pose.pose.position.x=.3
+        p.pose.pose.position.y=.1
+        p.id = 4
+        self._objects.append(p)
+        p = copy.deepcopy(poi_init)
+        p.pose.pose.position.x=.3
+        p.pose.pose.position.y=-.1
+        p.id = 5
+        self._objects.append(p)
+
+
+    def get_object_from_string(self, name):
+        return next((x for x in self._objects if self.get_name(x) == name), None)
+
+    def get_transform(self, poi):
+        if self.get_name(poi) == self._grasped_object:
+            t = self._tfBuffer.lookup_transform(REFERENCE_FRAME, 'sim_panda_gripper', rospy.Time(0))
+            poi.pose.header.frame_id = REFERENCE_FRAME
+            poi.pose.pose.position = self.get_pose_from_trans(t).position
+            poi.age = self._age_threshold + 1
+        t = TransformStamped()
+        t.header.frame_id = poi.pose.header.frame_id
+        t.child_frame_id = self.get_name(poi)
+        t.header.stamp = rospy.Time.now()
+        t.transform.translation.x=poi.pose.pose.position.x
+        t.transform.translation.y=poi.pose.pose.position.y
+        t.transform.translation.z=poi.pose.pose.position.z
+        t.transform.rotation.x=poi.pose.pose.orientation.x
+        t.transform.rotation.y=poi.pose.pose.orientation.y
+        t.transform.rotation.z=poi.pose.pose.orientation.z
+        t.transform.rotation.w=poi.pose.pose.orientation.w
+        index = -1
+        d = np.inf
+
+        if poi.type.data == "screw" and self.get_name(poi) != self._grasped_object:
+            for i,p in enumerate(self._init_pois):
+                if p.type.data == "hole":
+                    temp_d = self.get_diff_poses(poi.pose.pose,p.pose.pose) 
+                    if temp_d < d:
+                        d = temp_d
+                        index = i
+                        
+        if d < .04:
+            t.transform.translation.x = self._init_pois[index].pose.pose.position.x
+            t.transform.translation.y = self._init_pois[index].pose.pose.position.y
+            t.transform.translation.z = max(t.transform.translation.z,self._init_pois[index].pose.pose.position.z+.018)
+        return t   
+
+    def publish_pois(self):
+        if self._virtual and self._init_pois is None:
+            return
+        if self._virtual:
+            for o in self._objects:
+                if o.type.data == "holder" and o.state.data == "full" and o.pose.pose.position.x > .5:
+                    o.state.data = "assembled"
+        self._tf_array = []
+        msg = POIArray()
+        if self._world_type == "screws":
+            for poi in self._init_pois:
+                poi.pose.header.stamp = rospy.Time(0)
+                t = self.get_transform(poi)
+                self._tf_array.append(t)
+                msg.poi_array.append(poi)
+
+        for poi in self._objects:
+            if poi.age < self._age_threshold:
+                continue
+            poi.pose.header.stamp = rospy.Time(0)
+
+            t = self.get_transform(poi)
+            self._tf_array.append(t)
+            msg.poi_array.append(poi)
+        self._poi_pub.publish(msg)
+        if len(self._tf_array) > 0:
+            self._br.sendTransform(self._tf_array)
+           
+    def get_pose_from_trans(self, t):
+        pose = Pose()
+        pose.position.x = t.transform.translation.x
+        pose.position.y = t.transform.translation.y
+        pose.position.z = t.transform.translation.z
+        pose.orientation.x = t.transform.rotation.x
+        pose.orientation.y = t.transform.rotation.y
+        pose.orientation.z = t.transform.rotation.z
+        pose.orientation.w = t.transform.rotation.w
+        return pose
+
+    #def publish_meshes(self):
+    #    for p in self._estimated_objects:
+    #        if self.get_name(p) == self._grasped_object:
+    #            t = self._tfBuffer.lookup_transform(REFERENCE_FRAME, 'sim_panda_gripper', rospy.Time(0))
+    #            p.pose.header.frame_id = REFERENCE_FRAME
+    #            p.pose.pose = self.get_pose_from_trans(t)
+    #            
+    #        if p.type.data == "screw":
+    #            self.publish_mesh(p.pose.pose, "screw", p.id, "#a9a9a9",.70)
+
+
+    #from https://stackoverflow.com/questions/29643352/converting-hex-to-rgb-value-in-python
+    def get_color(self, string, alpha):
+        color = ColorRGBA()
+        string=string.lstrip('#')
+        (r,g,b) = tuple(int(string[i:i+2], 16)/255. for i in (0, 2, 4))
+        color.r = r
+        color.g = g
+        color.b = b
+        color.a=alpha
+        return color
+
+
+    def get_name(self, poi):
+        return poi.type.data + '_' + str(poi.id)
+
+    def publish_mesh(self, pose, name, i, color, alpha):
+        marker = Marker()
+        marker.header.frame_id = REFERENCE_FRAME
+        marker.pose = copy.deepcopy(pose)
+        marker.pose.position.z-=.053
+        marker.ns = name
+        marker.id = i
+        scale = 1
+        marker.scale.x=scale
+        marker.scale.y=scale
+        marker.scale.z=scale
+        marker.color = self.get_color(color, alpha)
+        marker.type = marker.MESH_RESOURCE
+        marker.mesh_resource = "package://authoring/meshes/"+name+".stl"
+        self._marker_pub.publish(marker)
+
+    def run(self):
+        r = rospy.Rate(20)
+        while not rospy.is_shutdown():
+            #self.publish_meshes()
+            self.publish_pois()
+            r.sleep()
+
+    def signal_handler(self, signal, frame):
+        sys.exit()
+
+if __name__ == "__main__":
+    rospy.init_node('state_tracker')
+    tracker = Tracker()
+    signal.signal(signal.SIGINT, tracker.signal_handler)
+    tracker.run()

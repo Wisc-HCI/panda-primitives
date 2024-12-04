@@ -1,0 +1,1 @@
+/workspace/devel/.private/authoring_msgs/share/common-lisp/ros/authoring_msgs/msg/_package_Command.lisp

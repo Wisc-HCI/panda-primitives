@@ -1,0 +1,266 @@
+#!/usr/bin/env python
+import rospy
+import signal
+import sys
+import math
+import tf
+import PyKDL
+
+from geometry_msgs.msg import Twist, Pose, PoseStamped
+from std_msgs.msg import String
+from nav_msgs.msg import Path
+from relaxed_ik.msg  import EEPoseGoals,JointAngles
+from sensor_msgs.msg import JointState
+from panda_ros_msgs.msg import JointPose
+
+import numpy as np 
+
+REFERENCE_FRAME='rel_ik_zero'
+
+class Mover(object):
+    def __init__(self):
+        self._tl = tf.TransformListener()
+        self._br = tf.TransformBroadcaster()
+
+        #self._goal_pub = rospy.Publisher("/relaxed_ik/ee_pose_goals", EEPoseGoals, queue_size=1)
+        self._r_ik = rospy.get_param('~use_relaxed_ik')
+        self._virtual = rospy.get_param('~only_virtual')
+        if not self._r_ik:
+            self._sim_vel_pub = rospy.Publisher("/mover/cart_vel",Twist,queue_size=5)
+        self._panda_vel_pub = rospy.Publisher("/panda/cart_vel",Twist,queue_size=5)
+        self._event_pub = rospy.Publisher("/event",String,queue_size=5)
+        self._cam_vel_pub = rospy.Publisher("/mover/cart_vel_cam",Twist,queue_size=5)
+        self._panda_path_pub = rospy.Publisher("/panda/path",Path,queue_size=5)
+        self._panda_joint_pub = rospy.Publisher("/panda/joint_pose",JointPose,queue_size=5)
+        self._sim_joint_pub = rospy.Publisher("/mover/joint_pose",JointPose,queue_size=5)
+
+        rospy.sleep(1.) # sleep a bit to make sure the TF cache is filled
+
+        #self._angle_sub = rospy.Subscriber("/relaxed_ik/joint_angle_solutions", JointAngles, self.on_solution, queue_size=1)
+        #self._joint_commands_pub = rospy.Publisher("/panda/joint_angle", JointAngles, queue_size = 5)
+
+        #self._gui_sub = rospy.Subscriber("/gui/command", String, self.on_command)
+        self._sim = True
+        self._exec = False
+        self._target_vel = None
+        self._freq = 100.
+        self._last_pose = None
+
+        self._cam_twist_sub = rospy.Subscriber("/planner/cam_goal_pose",PoseStamped, self.on_cam_goal)
+        self._twist_sub = rospy.Subscriber("/planner/goal_pose",PoseStamped, self.on_goal)
+        self._command_sub = rospy.Subscriber("/planner/command", String, self.on_command)
+        self._command_pub = rospy.Publisher("/panda/commands", String, queue_size=1)
+        self._event_sub = rospy.Subscriber("/event",String, self.on_event)
+        self._fd_sub = rospy.Subscriber("/fd/twist", Twist, self.on_fd)
+        self._joint_pose_sub = rospy.Subscriber("/planner/joint_pose", JointPose, self.on_joint)
+
+        self._fd_mod = Twist()
+        self._pause = False
+
+ 
+    def run(self):
+        rospy.spin()
+
+    def on_fd(self, msg):
+        self._fd_mod = msg
+
+    def on_event(self, msg):
+        cmd = msg.data.split(";")[0] 
+        if cmd == "motion_finished":
+            self._sim = False
+            self._exec = False
+            self._sim_vel_pub.publish(Twist())
+            self._panda_vel_pub.publish(Twist())
+        if cmd == "start_sim":
+            self._pause = False
+            self._sim = True
+            self._exec = False
+        if cmd == "start_exec":
+            self._pause = False
+            self._sim = False
+            self._exec = True
+        if cmd  == "wait":
+            vel = Twist()
+            self._sim_vel_pub.publish(vel)
+            self._panda_vel_pub.publish(Twist())
+        if cmd == "play" or msg.data == "stop_edit":
+            self._pause = False
+        if cmd == "pause":
+            self._pause = True
+            self._sim_vel_pub.publish(Twist())
+            self._panda_vel_pub.publish(Twist())
+ 
+    def on_cam_goal(self, msg):
+        if self._pause:
+            return
+        if self._sim or (self._exec and self._virtual):
+            cam_frame = "internal_rgb_camera_link"
+            (trans,rot) = self._tl.lookupTransform("panda_link0", cam_frame, rospy.Time(0))
+            d_t = (msg.header.stamp - rospy.Time.now()).to_sec()
+            pose = Pose()
+            pose.position.x = msg.pose.position.x-trans[0]
+            pose.position.y = msg.pose.position.y-trans[1]
+            pose.position.z = msg.pose.position.z-trans[2]
+            
+            #From https://answers.ros.org/question/10124/relative-rotation-between-two-quaternions/
+            qp = PyKDL.Rotation.Quaternion(rot[0],rot[1],rot[2],rot[3])
+
+            rot = msg.pose.orientation
+            qg = PyKDL.Rotation.Quaternion(rot.x,rot.y,rot.z,rot.w)
+            q = qg*qp.Inverse()
+
+            difference_angle = q.GetRPY()
+            angle  = list(difference_angle)
+
+            vel = Twist()
+            vel.linear.x = pose.position.x/d_t + self._fd_mod.linear.x
+            vel.linear.y = pose.position.y/d_t + self._fd_mod.linear.y
+            vel.linear.z = pose.position.z/d_t + self._fd_mod.linear.z
+            vel.angular.x = angle[0]/d_t + self._fd_mod.angular.x
+            vel.angular.y = angle[1]/d_t + self._fd_mod.angular.y
+            vel.angular.z = angle[2]/d_t + self._fd_mod.angular.z #Used to correct the orientation of the interface
+            #print("Publishing")
+            #print(vel)
+            self._event_pub.publish("z_or;"+str(qp.GetRPY()[2]+np.pi/2))
+            self._cam_vel_pub.publish(vel)
+
+    def on_joint(self, msg):
+        if self._pause:
+            return
+        if self._sim or (self._exec and self._virtual):
+            self._sim_joint_pub.publish(msg)
+        else:
+            self._panda_joint_pub.publish(msg)
+
+    def on_goal(self, msg):
+        if self._pause:
+            return
+        if self._sim or (self._exec and self._virtual):
+            ee_frame = 'sim_panda_gripper'
+            (trans,rot) = self._tl.lookupTransform("panda_link0", ee_frame, rospy.Time(0))
+            d_t = (msg.header.stamp - rospy.Time.now()).to_sec()
+            pose = Pose()
+            pose.position.x = msg.pose.position.x-trans[0]
+            pose.position.y = msg.pose.position.y-trans[1]
+            pose.position.z = msg.pose.position.z-trans[2]
+            
+            #From https://answers.ros.org/question/10124/relative-rotation-between-two-quaternions/
+
+            qp = PyKDL.Rotation.Quaternion(rot[0],rot[1],rot[2],rot[3])
+            current_angle = qp.GetRPY()
+
+            rot = msg.pose.orientation
+            qg = PyKDL.Rotation.Quaternion(rot.x,rot.y,rot.z,rot.w)
+            q = qg*qp.Inverse()
+
+            difference_angle = q.GetRPY()
+            angle  = list(difference_angle)
+            
+            d = current_angle[2] + difference_angle[2]
+            if d > np.pi:
+                angle[2] -= 2 * np.pi
+            if d < -np.pi:
+                angle[2] += 2 * np.pi 
+
+            vel = Twist()
+            vel.linear.x = pose.position.x/d_t + self._fd_mod.linear.x
+            vel.linear.y = pose.position.y/d_t + self._fd_mod.linear.y
+            vel.linear.z = pose.position.z/d_t + self._fd_mod.linear.z
+            vel.angular.x = angle[0]/d_t + self._fd_mod.angular.x
+            vel.angular.y = angle[1]/d_t + self._fd_mod.angular.y
+            vel.angular.z = angle[2]/d_t + self._fd_mod.angular.z
+            
+            self._sim_vel_pub.publish(vel)
+            return
+        if self._exec and not self._r_ik:
+            ee_frame = 'panda_gripper'
+            (trans,rot) = self._tl.lookupTransform("panda_link0", ee_frame, rospy.Time(0))
+            d_t = (msg.header.stamp - rospy.Time.now()).to_sec()
+            pose = Pose()
+            pose.position.x = msg.pose.position.x-trans[0]
+            pose.position.y = msg.pose.position.y-trans[1]
+            pose.position.z = msg.pose.position.z-trans[2]
+            
+            #From https://answers.ros.org/question/10124/relative-rotation-between-two-quaternions/
+
+            qp = PyKDL.Rotation.Quaternion(rot[0],rot[1],rot[2],rot[3])
+            current_angle = qp.GetRPY()
+
+            rot = msg.pose.orientation
+            qg = PyKDL.Rotation.Quaternion(rot.x,rot.y,rot.z,rot.w)
+            q = qg*qp.Inverse()
+
+            difference_angle = q.GetRPY()
+            angle  = list(difference_angle)
+            
+            d = current_angle[2] + difference_angle[2]
+            if d > np.pi:
+                angle[2] -= 2 * np.pi
+            if d < -np.pi:
+                angle[2] += 2 * np.pi 
+
+            vel = Twist()
+            if (d_t<.2):
+                d_t = .2
+            l=4
+            vel.linear.x = pose.position.x/d_t + l*self._fd_mod.linear.x
+            vel.linear.y = pose.position.y/d_t + l*self._fd_mod.linear.y
+            vel.linear.z = pose.position.z/d_t + l*self._fd_mod.linear.z
+            vel.angular.x = angle[0]/d_t + l*self._fd_mod.angular.x
+            vel.angular.y = angle[1]/d_t + l*self._fd_mod.angular.y
+            vel.angular.z = angle[2]/d_t + l*self._fd_mod.angular.z
+            self._panda_vel_pub.publish(vel)
+            return
+            
+            goal = Pose()
+            k = 10.
+            goal.position.x = trans[0] + vel.linear.x/k
+            goal.position.y = trans[1] + vel.linear.y/k
+            goal.position.z = trans[2] + vel.linear.z/k
+
+            qp = PyKDL.Rotation.Quaternion(rot.x,rot.y,rot.z,rot.w)
+            current_angle = qp.GetRPY()
+            desired_angle= (current_angle[0]+vel.angular.x/k,current_angle[1]+vel.angular.y/k, current_angle[2]+vel.angular.z/k)
+            q = PyKDL.Rotation.RPY(desired_angle[0],desired_angle[1],desired_angle[2])
+            q = q.GetQuaternion()
+            goal.orientation.x = q[0]
+            goal.orientation.y = q[1]
+            goal.orientation.z = q[2]
+            goal.orientation.w = q[3]
+            self._panda_pose_pub.publish(goal)
+
+            return
+            if msg.pose == self._last_pose:
+                return
+            path = Path()
+            path.poses.append(msg)
+            self._last_pose = msg.pose
+            self._panda_path_pub.publish(path)
+    
+#    def on_solution(self, msg):
+#        if not self._sim and self._exec:
+#            self._joint_commands_pub.publish(msg)
+
+    def on_command(self, msg):
+        commands = msg.data.split(";")
+        if commands[0] == "exec":
+            self._sim == False
+            self._exec = True
+        if commands[0] == "sim":
+            self._sim = True
+            self._exec = False
+        if commands[0] == "grasp" or commands[0] == "release":
+            vel = Twist()
+            self._sim_vel_pub.publish(vel)
+            self._panda_vel_pub.publish(Twist())
+        if self._exec:
+            self._command_pub.publish(msg)
+        
+    def signal_handler(self, signal, frame):
+        sys.exit(0)
+
+if __name__ == "__main__":
+    rospy.init_node("mover")
+    mover = Mover()
+    signal.signal(signal.SIGINT, mover.signal_handler)
+    mover.run()

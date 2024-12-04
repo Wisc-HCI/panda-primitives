@@ -1,0 +1,8 @@
+prefix=/workspace/devel/.private/rviz_camera_stream
+
+Name: rviz_camera_stream
+Description: Description of rviz_camera_stream
+Version: 1.0.1
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: roscpp rviz
