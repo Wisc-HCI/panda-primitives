@@ -24,10 +24,10 @@ xhost +local:
 ```
 Now  build the container image and start the container. Make sure you are in this root directory (NIST_Benchmark). These commands mount on the current directory as the containers file system so any changes you make to the files on your host machine will be mirrored in the container. These commands also allow the containers display to be forwarded to your host machine so that you can see it.
 ```bash
-sudo docker build -t panda-prim-container .
+sudo docker build -t panda-prim .
 
 # Start the container with real-time kernel privileges, mount onto the current directory, and allow display forwarding. Container is removed once it exits.
-sudo docker run --rm -it --privileged --cap-add=SYS_NICE --env DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd):/workspace --net=host panda-prim-container
+sudo docker run --rm -it --privileged --cap-add=SYS_NICE --env DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd):/workspace --net=host panda-prim
 ```
 
 Now build the repo

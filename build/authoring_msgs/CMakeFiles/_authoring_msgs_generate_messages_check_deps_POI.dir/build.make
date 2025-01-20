@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /workspace/build/authoring_msgs
 include CMakeFiles/_authoring_msgs_generate_messages_check_deps_POI.dir/progress.make
 
 CMakeFiles/_authoring_msgs_generate_messages_check_deps_POI:
-	catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py authoring_msgs /workspace/src/authoring-msgs/msg/POI.msg geometry_msgs/Pose:std_msgs/Header:geometry_msgs/Quaternion:geometry_msgs/Point:geometry_msgs/PoseStamped:std_msgs/String
+	catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py authoring_msgs /workspace/src/authoring-msgs/msg/POI.msg std_msgs/Header:std_msgs/String:geometry_msgs/Quaternion:geometry_msgs/PoseStamped:geometry_msgs/Point:geometry_msgs/Pose
 
 _authoring_msgs_generate_messages_check_deps_POI: CMakeFiles/_authoring_msgs_generate_messages_check_deps_POI
 _authoring_msgs_generate_messages_check_deps_POI: CMakeFiles/_authoring_msgs_generate_messages_check_deps_POI.dir/build.make

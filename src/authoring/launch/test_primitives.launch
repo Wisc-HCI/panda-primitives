@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+
+    <node pkg="authoring" type="planner" name="planner" output="screen"/>
+    <node pkg="authoring" type="mover" name="mover" output="screen">
+        <param name="only_virtual" type="bool" value="false" />
+        <param name="use_relaxed_ik" type="bool" value="false" />
+    </node>
+</launch>

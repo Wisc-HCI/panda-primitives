@@ -34,7 +34,6 @@ CAMERA_FRAME='internal_rgb_camera_link'
 
 class Parser(object):
     def __init__(self):
-
         self._joints = None
         self._camera_t = None
         self._freq = 1
@@ -346,7 +345,6 @@ class Parser(object):
             
             self._saved_view[list_actions[1]] = self._joints
             return
-
         if command_type.startswith("trigger"):
             #data: "trigger_1;screw;pix_pos:1200-1350_750-950"
             name = list_actions[0]
@@ -799,7 +797,7 @@ class Parser(object):
             self.run_trigger(to_trigger[0])
             
 
-    def run_trigger(self, t):      
+    def run_trigger(self,  ):      
         behavior = t.behavior
         p = t.candidates[0]
         if "MoveDiscrete" in t.behavior or "Tighten" in t.behavior or "Loosen" in t.behavior:

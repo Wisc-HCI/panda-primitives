@@ -19,47 +19,47 @@ add_custom_target(authoring_msgs_generate_messages ALL)
 
 get_filename_component(_filename "/workspace/src/authoring-msgs/msg/Action.msg" NAME_WE)
 add_custom_target(_authoring_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/src/authoring-msgs/msg/Action.msg" "panda_ros_msgs/HybridPose:geometry_msgs/Pose:std_msgs/Header:geometry_msgs/Twist:geometry_msgs/Quaternion:std_msgs/Bool:geometry_msgs/Point:geometry_msgs/Vector3:geometry_msgs/Wrench:std_msgs/String:panda_ros_msgs/HybridPoseArray"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/src/authoring-msgs/msg/Action.msg" "geometry_msgs/Twist:panda_ros_msgs/HybridPose:std_msgs/Header:geometry_msgs/Wrench:std_msgs/String:geometry_msgs/Quaternion:panda_ros_msgs/HybridPoseArray:std_msgs/Bool:geometry_msgs/Point:geometry_msgs/Pose:geometry_msgs/Vector3"
 )
 
 get_filename_component(_filename "/workspace/src/authoring-msgs/msg/Command.msg" NAME_WE)
 add_custom_target(_authoring_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/src/authoring-msgs/msg/Command.msg" "panda_ros_msgs/HybridPose:geometry_msgs/Pose:std_msgs/Header:geometry_msgs/Twist:panda_ros_msgs/HybridPoseArray:geometry_msgs/Quaternion:std_msgs/Bool:geometry_msgs/Point:geometry_msgs/Vector3:geometry_msgs/Wrench:std_msgs/String:authoring_msgs/Action"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/src/authoring-msgs/msg/Command.msg" "geometry_msgs/Twist:panda_ros_msgs/HybridPose:std_msgs/Header:authoring_msgs/Action:geometry_msgs/Wrench:std_msgs/String:geometry_msgs/Quaternion:panda_ros_msgs/HybridPoseArray:std_msgs/Bool:geometry_msgs/Point:geometry_msgs/Pose:geometry_msgs/Vector3"
 )
 
 get_filename_component(_filename "/workspace/src/authoring-msgs/msg/POI.msg" NAME_WE)
 add_custom_target(_authoring_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/src/authoring-msgs/msg/POI.msg" "geometry_msgs/Pose:std_msgs/Header:geometry_msgs/Quaternion:geometry_msgs/Point:geometry_msgs/PoseStamped:std_msgs/String"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/src/authoring-msgs/msg/POI.msg" "std_msgs/Header:std_msgs/String:geometry_msgs/Quaternion:geometry_msgs/PoseStamped:geometry_msgs/Point:geometry_msgs/Pose"
 )
 
 get_filename_component(_filename "/workspace/src/authoring-msgs/msg/POIArray.msg" NAME_WE)
 add_custom_target(_authoring_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/src/authoring-msgs/msg/POIArray.msg" "geometry_msgs/Pose:std_msgs/Header:geometry_msgs/Quaternion:geometry_msgs/Point:geometry_msgs/PoseStamped:std_msgs/String:authoring_msgs/POI"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/src/authoring-msgs/msg/POIArray.msg" "std_msgs/Header:std_msgs/String:geometry_msgs/Quaternion:geometry_msgs/PoseStamped:geometry_msgs/Point:geometry_msgs/Pose:authoring_msgs/POI"
 )
 
 get_filename_component(_filename "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringAction.msg" NAME_WE)
 add_custom_target(_authoring_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringAction.msg" "panda_ros_msgs/HybridPose:authoring_msgs/AuthoringActionResult:authoring_msgs/AuthoringResult:std_msgs/Header:actionlib_msgs/GoalID:authoring_msgs/Action:geometry_msgs/Quaternion:actionlib_msgs/GoalStatus:authoring_msgs/AuthoringGoal:authoring_msgs/AuthoringFeedback:std_msgs/String:panda_ros_msgs/HybridPoseArray:authoring_msgs/AuthoringActionFeedback:authoring_msgs/AuthoringActionGoal:geometry_msgs/Pose:geometry_msgs/Twist:std_msgs/Bool:geometry_msgs/Point:geometry_msgs/Vector3:geometry_msgs/Wrench"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringAction.msg" "authoring_msgs/AuthoringResult:actionlib_msgs/GoalID:geometry_msgs/Wrench:geometry_msgs/Quaternion:panda_ros_msgs/HybridPoseArray:geometry_msgs/Point:authoring_msgs/AuthoringFeedback:panda_ros_msgs/HybridPose:authoring_msgs/Action:authoring_msgs/AuthoringActionGoal:geometry_msgs/Vector3:authoring_msgs/AuthoringGoal:std_msgs/Header:actionlib_msgs/GoalStatus:std_msgs/Bool:authoring_msgs/AuthoringActionFeedback:geometry_msgs/Pose:geometry_msgs/Twist:std_msgs/String:authoring_msgs/AuthoringActionResult"
 )
 
 get_filename_component(_filename "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg" NAME_WE)
 add_custom_target(_authoring_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg" "authoring_msgs/AuthoringGoal:panda_ros_msgs/HybridPose:geometry_msgs/Pose:std_msgs/Header:geometry_msgs/Twist:panda_ros_msgs/HybridPoseArray:geometry_msgs/Quaternion:std_msgs/Bool:geometry_msgs/Point:geometry_msgs/Vector3:actionlib_msgs/GoalID:geometry_msgs/Wrench:std_msgs/String:authoring_msgs/Action"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg" "geometry_msgs/Twist:panda_ros_msgs/HybridPose:authoring_msgs/AuthoringGoal:std_msgs/Header:actionlib_msgs/GoalID:authoring_msgs/Action:geometry_msgs/Wrench:std_msgs/String:geometry_msgs/Quaternion:panda_ros_msgs/HybridPoseArray:std_msgs/Bool:geometry_msgs/Point:geometry_msgs/Pose:geometry_msgs/Vector3"
 )
 
 get_filename_component(_filename "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg" NAME_WE)
 add_custom_target(_authoring_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg" "authoring_msgs/AuthoringResult:std_msgs/Header:std_msgs/Bool:actionlib_msgs/GoalID:actionlib_msgs/GoalStatus"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg" "authoring_msgs/AuthoringResult:std_msgs/Header:actionlib_msgs/GoalID:actionlib_msgs/GoalStatus:std_msgs/Bool"
 )
 
 get_filename_component(_filename "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg" NAME_WE)
 add_custom_target(_authoring_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg" "actionlib_msgs/GoalID:std_msgs/Header:actionlib_msgs/GoalStatus:authoring_msgs/AuthoringFeedback"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg" "std_msgs/Header:actionlib_msgs/GoalStatus:actionlib_msgs/GoalID:authoring_msgs/AuthoringFeedback"
 )
 
 get_filename_component(_filename "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg" NAME_WE)
 add_custom_target(_authoring_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg" "panda_ros_msgs/HybridPose:geometry_msgs/Pose:std_msgs/Header:geometry_msgs/Twist:panda_ros_msgs/HybridPoseArray:geometry_msgs/Quaternion:std_msgs/Bool:geometry_msgs/Point:geometry_msgs/Vector3:geometry_msgs/Wrench:std_msgs/String:authoring_msgs/Action"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "authoring_msgs" "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg" "geometry_msgs/Twist:panda_ros_msgs/HybridPose:std_msgs/Header:authoring_msgs/Action:geometry_msgs/Wrench:std_msgs/String:geometry_msgs/Quaternion:panda_ros_msgs/HybridPoseArray:std_msgs/Bool:geometry_msgs/Point:geometry_msgs/Pose:geometry_msgs/Vector3"
 )
 
 get_filename_component(_filename "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg" NAME_WE)
@@ -81,55 +81,55 @@ add_custom_target(_authoring_msgs_generate_messages_check_deps_${_filename}
 _generate_msg_cpp(authoring_msgs
   "/workspace/src/authoring-msgs/msg/Action.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_cpp(authoring_msgs
   "/workspace/src/authoring-msgs/msg/Command.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/Action.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_cpp(authoring_msgs
   "/workspace/src/authoring-msgs/msg/POI.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_cpp(authoring_msgs
   "/workspace/src/authoring-msgs/msg/POIArray.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/POI.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/workspace/src/authoring-msgs/msg/POI.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_cpp(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringAction.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg"
+  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/workspace/src/authoring-msgs/msg/Action.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_cpp(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/Action.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_cpp(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg"
+  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_cpp(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_cpp(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/Action.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_cpp(authoring_msgs
@@ -194,55 +194,55 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS authoring_msgs_generate_messages_cp
 _generate_msg_eus(authoring_msgs
   "/workspace/src/authoring-msgs/msg/Action.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_eus(authoring_msgs
   "/workspace/src/authoring-msgs/msg/Command.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/Action.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_eus(authoring_msgs
   "/workspace/src/authoring-msgs/msg/POI.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_eus(authoring_msgs
   "/workspace/src/authoring-msgs/msg/POIArray.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/POI.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/workspace/src/authoring-msgs/msg/POI.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_eus(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringAction.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg"
+  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/workspace/src/authoring-msgs/msg/Action.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_eus(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/Action.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_eus(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg"
+  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_eus(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_eus(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/Action.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_eus(authoring_msgs
@@ -307,55 +307,55 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS authoring_msgs_generate_messages_eu
 _generate_msg_lisp(authoring_msgs
   "/workspace/src/authoring-msgs/msg/Action.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_lisp(authoring_msgs
   "/workspace/src/authoring-msgs/msg/Command.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/Action.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_lisp(authoring_msgs
   "/workspace/src/authoring-msgs/msg/POI.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_lisp(authoring_msgs
   "/workspace/src/authoring-msgs/msg/POIArray.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/POI.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/workspace/src/authoring-msgs/msg/POI.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_lisp(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringAction.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg"
+  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/workspace/src/authoring-msgs/msg/Action.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_lisp(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/Action.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_lisp(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg"
+  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_lisp(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_lisp(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/Action.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_lisp(authoring_msgs
@@ -420,55 +420,55 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS authoring_msgs_generate_messages_li
 _generate_msg_nodejs(authoring_msgs
   "/workspace/src/authoring-msgs/msg/Action.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_nodejs(authoring_msgs
   "/workspace/src/authoring-msgs/msg/Command.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/Action.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_nodejs(authoring_msgs
   "/workspace/src/authoring-msgs/msg/POI.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_nodejs(authoring_msgs
   "/workspace/src/authoring-msgs/msg/POIArray.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/POI.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/workspace/src/authoring-msgs/msg/POI.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_nodejs(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringAction.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg"
+  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/workspace/src/authoring-msgs/msg/Action.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_nodejs(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/Action.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_nodejs(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg"
+  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_nodejs(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_nodejs(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/Action.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_nodejs(authoring_msgs
@@ -533,55 +533,55 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS authoring_msgs_generate_messages_no
 _generate_msg_py(authoring_msgs
   "/workspace/src/authoring-msgs/msg/Action.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_py(authoring_msgs
   "/workspace/src/authoring-msgs/msg/Command.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/Action.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_py(authoring_msgs
   "/workspace/src/authoring-msgs/msg/POI.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_py(authoring_msgs
   "/workspace/src/authoring-msgs/msg/POIArray.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/POI.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/PoseStamped.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/workspace/src/authoring-msgs/msg/POI.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_py(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringAction.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg"
+  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/workspace/src/authoring-msgs/msg/Action.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_py(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionGoal.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/Action.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_py(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionResult.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg"
+  "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringResult.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_py(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringActionFeedback.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg"
+  "/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalStatus.msg;/opt/ros/noetic/share/actionlib_msgs/cmake/../msg/GoalID.msg;/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringFeedback.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_py(authoring_msgs
   "/workspace/devel/.private/authoring_msgs/share/authoring_msgs/msg/AuthoringGoal.msg"
   "${MSG_I_FLAGS}"
-  "/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/workspace/src/authoring-msgs/msg/Action.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Twist.msg;/workspace/src/panda-ros-msgs/msg/HybridPose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/workspace/src/authoring-msgs/msg/Action.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Wrench.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/String.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg;/workspace/src/panda-ros-msgs/msg/HybridPoseArray.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Bool.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Vector3.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/authoring_msgs
 )
 _generate_msg_py(authoring_msgs

@@ -1,0 +1,56 @@
+CMake Warning (dev) at CMakeLists.txt:2 (project):
+  Policy CMP0048 is not set: project() command manages VERSION variables.
+  Run "cmake --help-policy CMP0048" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  The following variable(s) would be set to empty:
+
+    CMAKE_PROJECT_VERSION
+    CMAKE_PROJECT_VERSION_MAJOR
+    CMAKE_PROJECT_VERSION_MINOR
+    CMAKE_PROJECT_VERSION_PATCH
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+[36m--[0m Using CATKIN_DEVEL_PREFIX: /workspace/devel/.private/authoring
+[36m--[0m Using CMAKE_PREFIX_PATH: /workspace/devel;/opt/ros/noetic
+[36m--[0m This workspace overlays: /workspace/devel;/opt/ros/noetic
+[36m--[0m Found PythonInterp: /usr/bin/python3 (found suitable version "3.8.10", minimum required is "3")
+[36m--[0m Using PYTHON_EXECUTABLE: /usr/bin/python3
+[36m--[0m Using Debian Python package layout
+[36m--[0m Using empy: /usr/lib/python3/dist-packages/em.py
+[36m--[0m Using CATKIN_ENABLE_TESTING: ON
+[36m--[0m Call enable_testing()
+[36m--[0m Using CATKIN_TEST_RESULTS_DIR: /workspace/build/authoring/test_results
+[36m--[0m Forcing gtest/gmock from source, though one was otherwise available.
+[36m--[0m Found gtest sources under '/usr/src/googletest': gtests will be built
+[36m--[0m Found gmock sources under '/usr/src/googletest': gmock will be built
+[36m--[0m Found PythonInterp: /usr/bin/python3 (found version "3.8.10")
+[36m--[0m Using Python nosetests: /usr/bin/nosetests3
+[36m--[0m catkin 0.8.10
+[36m--[0m BUILD_SHARED_LIBS is on
+[36m--[0m Using these message generators: gencpp;geneus;genlisp;gennodejs;genpy
+[36m--[0m OpenCV version: 4.2.0
+[36m--[0m test
+[36m--[0m /workspace/src/authoring
+[36m--[0m Installing devel-space wrapper /workspace/src/authoring/nodes/rviz_viewer.py to /workspace/devel/.private/authoring/lib/authoring
+[36m--[0m Installing devel-space wrapper /workspace/src/authoring/nodes/start_here.py to /workspace/devel/.private/authoring/lib/authoring
+[36m--[0m Installing devel-space wrapper /workspace/src/authoring/nodes/parser to /workspace/devel/.private/authoring/lib/authoring
+[36m--[0m Installing devel-space wrapper /workspace/src/authoring/nodes/planner to /workspace/devel/.private/authoring/lib/authoring
+[36m--[0m Installing devel-space wrapper /workspace/src/authoring/nodes/mover to /workspace/devel/.private/authoring/lib/authoring
+[36m--[0m Installing devel-space wrapper /workspace/src/authoring/nodes/poi to /workspace/devel/.private/authoring/lib/authoring
+[36m--[0m Installing devel-space wrapper /workspace/src/authoring/nodes/simulator to /workspace/devel/.private/authoring/lib/authoring
+[36m--[0m Installing devel-space wrapper /workspace/src/authoring/nodes/static_publisher to /workspace/devel/.private/authoring/lib/authoring
+[36m--[0m Installing devel-space wrapper /workspace/src/authoring/nodes/tf_printer to /workspace/devel/.private/authoring/lib/authoring
+[36m--[0m Installing devel-space wrapper /workspace/src/authoring/nodes/r_ik_wrapper to /workspace/devel/.private/authoring/lib/authoring
+[36m--[0m Installing devel-space wrapper /workspace/src/authoring/nodes/space_mouse to /workspace/devel/.private/authoring/lib/authoring
+[31m[1mCMake Error[0m at /opt/ros/noetic/share/catkin/cmake/catkin_install_python.cmake:86 (message):
+  catkin_install_python() called with non-existing file
+  '/workspace/src/authoring/nodes/tst_parser.py'.
+[36mCall Stack (most recent call first):[0m
+  CMakeLists.txt:101 (catkin_install_python)
+
+
+[36m--[0m Configuring incomplete, errors occurred!
+See also "/workspace/build/authoring/CMakeFiles/CMakeOutput.log".
+See also "/workspace/build/authoring/CMakeFiles/CMakeError.log".
+make: *** [Makefile:1484: cmake_check_build_system] Error 1

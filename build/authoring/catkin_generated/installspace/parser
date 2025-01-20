@@ -799,7 +799,7 @@ class Parser(object):
             self.run_trigger(to_trigger[0])
             
 
-    def run_trigger(self, t):      
+    def run_trigger(self,  ):      
         behavior = t.behavior
         p = t.candidates[0]
         if "MoveDiscrete" in t.behavior or "Tighten" in t.behavior or "Loosen" in t.behavior:

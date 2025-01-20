@@ -110,6 +110,7 @@ catkin_install_python(PROGRAMS
     nodes/tf_printer
     nodes/r_ik_wrapper
     nodes/space_mouse
+    nodes/test_parser.py
     nodes/virtual_camera_manager
     nodes/pc_publish
     nodes/tracker
