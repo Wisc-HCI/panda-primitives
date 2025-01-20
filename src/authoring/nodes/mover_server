@@ -46,7 +46,6 @@ class AuthoringAction(object):
         self._current_joint = None
         self._success = False
 
-        self._virtual = rospy.get_param('~only_virtual')
         #TODO To fix
         self._angle_time = rospy.Time.now()
         self._as = actionlib.SimpleActionServer(self._action_name, authoring_msgs.msg.AuthoringAction, execute_cb=self.execute_cb, auto_start = False)
@@ -104,11 +103,11 @@ class AuthoringAction(object):
         cam_goal.child_frame_id = "cam_goal"
         cam_goal.transform.rotation.w = 1
         self._tfBuffer.set_transform(cam_goal,"mover_server")
-        cam_2_ee = self._tfBuffer.lookup_transform(CAMERA_FRAME, 'sim_panda_gripper', rospy.Time(0))
-        cam_2_ee.header.frame_id = "cam_goal"
-        cam_2_ee.child_frame_id = "cam_ee_goal"
-        cam_2_ee.header.stamp = rospy.Time.now()
-        self._tfBuffer.set_transform(cam_2_ee,"mover")
+        # cam_2_ee = self._tfBuffer.lookup_transform(CAMERA_FRAME, 'sim_panda_gripper', rospy.Time(0))
+        # cam_2_ee.header.frame_id = "cam_goal"
+        # cam_2_ee.child_frame_id = "cam_ee_goal"
+        # cam_2_ee.header.stamp = rospy.Time.now()
+        # self._tfBuffer.set_transform(cam_2_ee,"mover")
 
     def on_deformation(self, msg):
         self._deformation.linear.x += np.round(msg.linear.x,3) * self._deformation_smoothing
@@ -213,11 +212,11 @@ class AuthoringAction(object):
             cam_goal = self.get_trans_from_pose(goal.goal.pose,"cam_goal")
             cam_goal.header.stamp = t
             self._tfBuffer.set_transform(cam_goal,"mover_server")
-            cam_2_ee = self._tfBuffer.lookup_transform(CAMERA_FRAME, 'sim_panda_gripper', t)
-            cam_2_ee.header.frame_id = "cam_goal"
-            cam_2_ee.child_frame_id = "cam_ee_goal"
-            cam_2_ee.header.stamp = t
-            self._tfBuffer.set_transform(cam_2_ee,"mover")
+            # cam_2_ee = self._tfBuffer.lookup_transform(CAMERA_FRAME, 'sim_panda_gripper', t)
+            # cam_2_ee.header.frame_id = "cam_goal"
+            # cam_2_ee.child_frame_id = "cam_ee_goal"
+            # cam_2_ee.header.stamp = t
+            # self._tfBuffer.set_transform(cam_2_ee,"mover")
             cam_ee_goal = self._tfBuffer.lookup_transform(REFERENCE_FRAME, "cam_ee_goal", t)
             p = self.get_pose_from_trans(cam_ee_goal)
             goal.goal.pose.pose = p.pose 
