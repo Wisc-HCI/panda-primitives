@@ -1,1 +1,0 @@
-/workspace/devel/.private/panda_ros_msgs/share/roseus/ros/panda_ros_msgs/msg/JointPose.l

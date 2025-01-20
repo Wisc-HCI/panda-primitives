@@ -1,1 +1,0 @@
-/workspace/devel/.private/authoring/lib/authoring/rviz_viewer.py

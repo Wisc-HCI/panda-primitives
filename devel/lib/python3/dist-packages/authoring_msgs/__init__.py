@@ -1,1 +1,0 @@
-/workspace/devel/.private/authoring_msgs/lib/python3/dist-packages/authoring_msgs/__init__.py

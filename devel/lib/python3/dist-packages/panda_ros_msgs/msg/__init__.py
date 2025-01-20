@@ -1,1 +1,0 @@
-/workspace/devel/.private/panda_ros_msgs/lib/python3/dist-packages/panda_ros_msgs/msg/__init__.py

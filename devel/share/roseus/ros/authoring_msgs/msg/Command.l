@@ -1,1 +1,0 @@
-/workspace/devel/.private/authoring_msgs/share/roseus/ros/authoring_msgs/msg/Command.l

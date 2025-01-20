@@ -1,8 +1,0 @@
-prefix=/workspace/devel/.private/authoring_msgs
-
-Name: authoring_msgs
-Description: Description of authoring_msgs
-Version: 0.1.0
-Cflags: -I/workspace/devel/.private/authoring_msgs/include
-Libs: -L${prefix}/lib 
-Requires: actionlib_msgs geometry_msgs std_msgs sensor_msgs panda_ros_msgs

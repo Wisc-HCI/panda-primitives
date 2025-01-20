@@ -1,1 +1,0 @@
-/workspace/devel/.private/panda_ros_msgs/include/panda_ros_msgs/JointPose.h

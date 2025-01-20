@@ -1,1 +1,0 @@
-/workspace/devel/.private/authoring_msgs/share/gennodejs/ros/authoring_msgs/msg/AuthoringActionFeedback.js

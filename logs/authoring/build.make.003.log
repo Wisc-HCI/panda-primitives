@@ -1,4 +1,0 @@
-[35m[1mScanning dependencies of target pandaJacob[0m
-[ 50%] [32mBuilding CXX object CMakeFiles/pandaJacob.dir/src/jacob.cpp.o[0m
-[100%] [32m[1mLinking CXX executable /workspace/devel/.private/authoring/lib/authoring/pandaJacob[0m
-[100%] Built target pandaJacob

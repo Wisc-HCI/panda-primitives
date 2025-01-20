@@ -1,1 +1,0 @@
-/workspace/devel/.private/authoring_msgs/share/authoring_msgs/cmake/authoring_msgs-msg-extras.cmake

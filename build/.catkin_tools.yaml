@@ -1,6 +1,0 @@
-devel_space: /workspace/devel
-install: false
-install_space: /workspace/install
-profile: default
-source_space: /workspace/src
-workspace: /workspace
