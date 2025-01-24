@@ -17,8 +17,7 @@ import random
 
 import copy
 
-# REFERENCE_FRAME = "panda_link0"
-REFERENCE_FRAME = "panda_hand"
+REFERENCE_FRAME = "panda_link0"
 CAMERA_FRAME = "rotated_camera"
 
 class AuthoringAction(object):
@@ -207,8 +206,8 @@ class AuthoringAction(object):
         if goal.goal.type != goal.goal.VIEW and goal.goal.type != goal.goal.CAMERA_VELOCITY:
             #if self._camera_control:
             #    self.camera_control(False)
-            # self._starting_pose = self.get_pose_from_trans(self._tfBuffer.lookup_transform("panda_link0", "panda_gripper", rospy.Time(0)))
-            self._starting_pose = self.get_pose_from_trans(self._tfBuffer.lookup_transform("panda_hand", "panda_gripper", rospy.Time(0)))
+            self._starting_pose = self.get_pose_from_trans(self._tfBuffer.lookup_transform("panda_link0", "panda_gripper", rospy.Time(0)))
+            
 
             self.get_pose_rot(self._starting_pose.pose,goal.goal.pose.constraint_frame)
         else:
@@ -225,8 +224,8 @@ class AuthoringAction(object):
             cam_ee_goal = self._tfBuffer.lookup_transform(REFERENCE_FRAME, "cam_ee_goal", t)
             p = self.get_pose_from_trans(cam_ee_goal)
             goal.goal.pose.pose = p.pose 
-            # self._starting_pose = self.get_pose_from_trans(self._tfBuffer.lookup_transform("panda_link0", "sim_panda_gripper", rospy.Time(0)))
-            self._starting_pose = self.get_pose_from_trans(self._tfBuffer.lookup_transform("panda_hand", "sim_panda_gripper", rospy.Time(0)))
+            self._starting_pose = self.get_pose_from_trans(self._tfBuffer.lookup_transform("panda_link0", "sim_panda_gripper", rospy.Time(0)))
+        
 
             self.get_pose_rot(self._starting_pose.pose,goal.goal.pose.constraint_frame)
 
@@ -744,7 +743,7 @@ class AuthoringAction(object):
         pose.position.z = p1.position.z+(p2.position.z-p1.position.z)*ratio
         q1 = [p1.orientation.x,p1.orientation.y,p1.orientation.z,p1.orientation.w]
         q2 = [p2.orientation.x,p2.orientation.y,p2.orientation.z,p2.orientation.w]
-        print("Q1", q1, "Q2", q1)
+        print("Q1", q1, "Q2", q2)
         key_rots = R.from_quat([q1,q2])
         key_times = [0, 1]
         slerp = Slerp(key_times, key_rots)
