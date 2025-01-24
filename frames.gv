@@ -1,0 +1,12 @@
+digraph G {
+"panda_link0" -> "external_view"[label="Broadcaster: /external_view_static_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1737742635.110 sec old)\nBuffer length: 0.000 sec\n"];
+"camera_base" -> "internal_camera_base"[label="Broadcaster: /internal_camera_static_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1737742635.110 sec old)\nBuffer length: 0.000 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1737742635.110"[ shape=plaintext ] ;
+ }->"panda_link0";
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1737742635.110"[ shape=plaintext ] ;
+ }->"camera_base";
+}

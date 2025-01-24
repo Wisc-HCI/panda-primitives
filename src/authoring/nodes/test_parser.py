@@ -8,6 +8,9 @@ Then make sure to set up this repo (according to the readme) run:
     `roslaunch authoring test_primitives.launch`
 - Terminal 2:
     `rosrun authoring test_parser.py`
+
+- [Optional] Terminal 3: View tranforms
+    `rosrun rqt_tf_tree rqt_tf_tree`
 """
 
 
