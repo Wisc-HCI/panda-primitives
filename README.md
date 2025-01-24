@@ -49,3 +49,6 @@ First, start `roscore` in a dedicated terminal.
 This system is designed to be interfaced with the [Task-Level Authoring](https://github.com/emmanuel-senft/authoring-gui/) which can be run using QtCreator or served on a website.
 
 To start a condition, run the related code through QtCreator. Of note, the default setting for this release is simulation, but when using the real system (`roslaunch authoring all.launch`), the line `property bool simu: true` in each main.qml file needs to be set to `false`.
+
+## TODO
+* Make a bunch of these packages submodules instead of cloned in here.
