@@ -24,10 +24,10 @@ xhost +local:
 ```
 Now  build the container image and start the container. Make sure you are in this root directory (NIST_Benchmark). These commands mount on the current directory as the containers file system so any changes you make to the files on your host machine will be mirrored in the container. These commands also allow the containers display to be forwarded to your host machine so that you can see it.
 ```bash
-sudo docker build -t panda-prim .
+sudo docker build -t panda-prim-container .
 
 # Start the container with real-time kernel privileges, mount onto the current directory, and allow display forwarding. Container is removed once it exits.
-sudo docker run --rm -it --privileged --cap-add=SYS_NICE --env DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd):/workspace --net=host panda-prim
+sudo docker run --rm -it --privileged --cap-add=SYS_NICE --env DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd):/workspace --net=host panda-prim-container
 ```
 
 Now build the repo
@@ -49,6 +49,3 @@ First, start `roscore` in a dedicated terminal.
 This system is designed to be interfaced with the [Task-Level Authoring](https://github.com/emmanuel-senft/authoring-gui/) which can be run using QtCreator or served on a website.
 
 To start a condition, run the related code through QtCreator. Of note, the default setting for this release is simulation, but when using the real system (`roslaunch authoring all.launch`), the line `property bool simu: true` in each main.qml file needs to be set to `false`.
-
-## TODO
-* Make a bunch of these packages submodules instead of cloned in here.

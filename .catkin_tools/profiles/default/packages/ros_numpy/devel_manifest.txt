@@ -1,6 +1,0 @@
-ros_numpy
-/workspace/devel/.private/ros_numpy/cmake.lock /workspace/devel/./cmake.lock
-/workspace/devel/.private/ros_numpy/lib/python3/dist-packages/ros_numpy/__init__.py /workspace/devel/lib/python3/dist-packages/ros_numpy/__init__.py
-/workspace/devel/.private/ros_numpy/lib/pkgconfig/ros_numpy.pc /workspace/devel/lib/pkgconfig/ros_numpy.pc
-/workspace/devel/.private/ros_numpy/share/ros_numpy/cmake/ros_numpyConfig.cmake /workspace/devel/share/ros_numpy/cmake/ros_numpyConfig.cmake
-/workspace/devel/.private/ros_numpy/share/ros_numpy/cmake/ros_numpyConfig-version.cmake /workspace/devel/share/ros_numpy/cmake/ros_numpyConfig-version.cmake
