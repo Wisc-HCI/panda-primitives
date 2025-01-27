@@ -49,7 +49,14 @@ def test_planner():
         hybrid_pose.sel_vector = [1,1,1,0,0,0]
         hybrid_pose.pose.position.x=0.35
         hybrid_pose.pose.position.y=0.1
-        hybrid_pose.pose.position.y=0.25
+        hybrid_pose.pose.position.z=0.25
+        
+        # This is facing Downward (x=0, y=0, z=0, w=1)
+        hybrid_pose.pose.orientation.w=1
+
+        # The mover does something where it transforms based on the constraint frame (quaternion)
+        # To have no transform, the following should be set: x=0, y=0, z=0, w=1
+        hybrid_pose.constraint_frame.w = 1 
 
 
         poses = HybridPoseArray()
