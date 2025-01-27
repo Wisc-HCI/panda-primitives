@@ -11,6 +11,10 @@ Then make sure to set up this repo (according to the readme) run:
 
 - [Optional] Terminal 3: View tranforms
     `rosrun rqt_tf_tree rqt_tf_tree`
+
+
+Note: If you want virtual, toggle line 112 in mover_server to True and run 
+`roslaunch authoring all.launch only_virtual:=true` instead 
 """
 
 import copy
