@@ -5,7 +5,7 @@ panda-primitives-control (according to the readme and run
 
 Then make sure to set up this repo (according to the readme) run:
 - Terminal 1:
-    `roslaunch authoring test_primitives.launch`
+    `roslaunch authoring all.launch`
 - Terminal 2:
     `rosrun authoring test_parser.py`
 

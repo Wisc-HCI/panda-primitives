@@ -109,8 +109,8 @@ class AuthoringAction(object):
         # cam_2_ee.header.stamp = rospy.Time.now()
         # self._tfBuffer.set_transform(cam_2_ee,"mover")
 
-        # self._virtual = False
-        self._virtual = True
+        self._virtual = False
+        # self._virtual = True
 
     def on_deformation(self, msg):
         self._deformation.linear.x += np.round(msg.linear.x,3) * self._deformation_smoothing
