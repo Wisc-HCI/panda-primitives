@@ -187,7 +187,6 @@ class AuthoringAction(object):
         #return
         #print(goal)
 
-        print("GOAL", goal)
         self._current_action = None
         self._angle_move = None
         self._waiting_for = None
@@ -208,13 +207,11 @@ class AuthoringAction(object):
         if goal.goal.type != goal.goal.VIEW and goal.goal.type != goal.goal.CAMERA_VELOCITY:
             #if self._camera_control:
             #    self.camera_control(False)
-            print("RIGHT BEFORE WHERE I THINK I SHOULD TRANSFORM")
+
             self._starting_pose = self.get_pose_from_trans(self._tfBuffer.lookup_transform("panda_link0", "panda_gripper", rospy.Time(0)))
             
-            print("CONSTRAINT", goal.goal.pose.constraint_frame)
 
             self.get_pose_rot(self._starting_pose.pose, goal.goal.pose.constraint_frame)
-            print("AFTER ROTATION:", self._starting_pose)
         else:
             t = rospy.Time.now()
             goal.goal.pose.header.frame_id = REFERENCE_FRAME
@@ -458,7 +455,6 @@ class AuthoringAction(object):
         
         if np.all(np.abs(linear)<linear_threshold) and np.all(np.abs(angular)<angular_threshold) and self._biased_wrench.force.z < force_threshold:
             return True
-        print("MADE IT HERE FORCE")
         goal.pose = self.interpolate_poses(self._starting_pose.pose, action.pose.pose,progress)
         goal.wrench.force.z = self._push_force
         
@@ -552,7 +548,6 @@ class AuthoringAction(object):
             return True
     
         progress = min((rospy.Time.now() - self._starting_time).to_sec()/(goal.header.stamp - self._starting_time).to_sec(),1)
-        print("MADE IT HERE POSITION")
         goal.pose = self.interpolate_poses(self._starting_pose.pose, goal.pose,progress)
         
         self.publish_pose(goal)
@@ -721,7 +716,6 @@ class AuthoringAction(object):
     
     def get_pose_from_trans(self,t):
 
-        print("IN TRANSFORM", t)
         p=PoseStamped()
         p.header=t.header
         p.pose.position.x = t.transform.translation.x
@@ -753,9 +747,6 @@ class AuthoringAction(object):
         pose.position.z = p1.position.z+(p2.position.z-p1.position.z)*ratio
         q1 = [p1.orientation.x,p1.orientation.y,p1.orientation.z,p1.orientation.w]
         q2 = [p2.orientation.x,p2.orientation.y,p2.orientation.z,p2.orientation.w]
-        print("Q1", q1, "Q2", q2)
-        print("P1", p1.position)
-        print("P2", p2.position)
         key_rots = R.from_quat([q1,q2])
         key_times = [0, 1]
         slerp = Slerp(key_times, key_rots)
