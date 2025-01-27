@@ -17,14 +17,6 @@
        />
     </group>
 
-    <!-- <group if="$(arg use_static_cloud)">
-        <node pkg="authoring" type="static_publisher" name="camera_static_publisher">
-            <param name="file_name" type="string" value="transforms.yaml" />
-            <param name="transform" type="string" value="static_cloud_transform" />
-        </node>
-
-        <node pkg="authoring" type="pc_publish" name="pc_publish"/>
-    </group> -->
 
     <node pkg="authoring" type="static_publisher" name="external_view_static_publisher">
         <param name="file_name" type="string" value="transforms.yaml" />
@@ -45,10 +37,7 @@
             <param name="use_relaxed_ik" type="bool" value="false" />
             <param name="only_virtual" value="$(arg only_virtual)" />
         </node>
-<!-- 
-    <include file="$(find authoring)/launch/virtual_camera.launch">  
-        </include>
-         -->
+
         <!-- startup rviz -->
         <node pkg="authoring" type="rviz_manager" name="rviz_manager">
             <param name="only_virtual" value="$(arg only_virtual)" />
@@ -91,7 +80,6 @@
             <param name="transform" type="string" value="static_cloud_transform" />
         </node>
 
-        <!-- <node pkg="authoring" type="pc_publish" name="pc_publish"/> -->
     </group>
 
     <include file="$(find authoring)/launch/joint_state_pub.launch">  
