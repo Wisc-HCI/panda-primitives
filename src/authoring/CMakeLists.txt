@@ -103,8 +103,9 @@ catkin_install_python(PROGRAMS
     nodes/simulator
     nodes/static_publisher
     nodes/tf_printer
-    nodes/test_parser.py
     nodes/rviz_manager
+    test/test_twist.py
+    test/test_wipe.py
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 install(TARGETS pandaJacob

@@ -51,8 +51,10 @@ You will need:
 3. In a seperate terminal (still in your docker container), run:
     ```bash
     source devel/setup.bash
-    rosrun authoring test_parser.py
+    rosrun authoring test_twist.py
     ```
+
+    You can also run any other scripts in the authoring/test folder in this same manner.
 
 ---
 
