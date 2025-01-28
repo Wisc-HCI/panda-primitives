@@ -23,6 +23,9 @@ CAMERA_FRAME = "rotated_camera"
 class AuthoringAction(object):
 
     def __init__(self, name):
+        # params
+        self._virtual = rospy.get_param("~only_virtual")
+
         self._action_name = name
         self._freq = 1000
         self._tfBuffer = tf2_ros.Buffer()
@@ -109,8 +112,7 @@ class AuthoringAction(object):
         # cam_2_ee.header.stamp = rospy.Time.now()
         # self._tfBuffer.set_transform(cam_2_ee,"mover")
 
-        self._virtual = False
-        # self._virtual = True
+    
 
     def on_deformation(self, msg):
         self._deformation.linear.x += np.round(msg.linear.x,3) * self._deformation_smoothing

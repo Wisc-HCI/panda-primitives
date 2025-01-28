@@ -1,21 +1,9 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="rgb_point_cloud" default="true"/>
+
     <arg name="with_utils" default="true"/>
-    <arg name="use_static_cloud" default="false"/>
-    <arg name="local_kinect" default="false"/>
     <arg name="only_virtual" default="false"/>
     <arg name="with_rviz" default="$(arg only_virtual)"/>
-    <arg name="use_fake_kinect" default="$(arg only_virtual)"/>
-    <arg name="record" default="false"/>
-    <arg name="bridge" default="false"/>
-
-
-    <group if="$(arg record)">
-        <node pkg="rosbag" type="record" name="rosbag_record_event"
-       args="record -o /home/senft/Documents/tap\ study/bags /event /gui/command /parser/gui_info"
-       />
-    </group>
 
 
     <node pkg="authoring" type="static_publisher" name="external_view_static_publisher">
@@ -34,7 +22,6 @@
         </node>
 
         <node pkg="authoring" type="simulator" name="simulator" output="screen">
-            <param name="use_relaxed_ik" type="bool" value="false" />
             <param name="only_virtual" value="$(arg only_virtual)" />
         </node>
 
@@ -53,34 +40,9 @@
         </group>
     </group>
     
-    <group if="$(arg local_kinect)">
-        <include file="$(find authoring)/launch/kinect.launch">
-            <arg name="rgb_point_cloud" default="$(arg rgb_point_cloud)"/>
-            <arg name="tf_prefix" default="internal_"/>
-        </include>
-    </group>
 
-    <group unless="$(arg use_fake_kinect)">
-        <node pkg="authoring" type="static_publisher" name="rgb_camera_static_publisher">
-            <param name="file_name" type="string" value="transforms.yaml" />
-            <param name="transform" type="string" value="rgb_camera_transform" />
-        </node>
-        <node pkg="authoring" type="cloud_filter" name="cloud_filter"/>
 
-    </group>
 
-    <group if="$(arg use_fake_kinect)">
-        <node pkg="authoring" type="static_publisher" name="rgb_camera_static_publisher">
-            <param name="file_name" type="string" value="transforms.yaml" />
-            <param name="transform" type="string" value="fake_camera_transform" />
-        </node>
-
-        <node pkg="authoring" type="static_publisher" name="camera_static_publisher">
-            <param name="file_name" type="string" value="transforms.yaml" />
-            <param name="transform" type="string" value="static_cloud_transform" />
-        </node>
-
-    </group>
 
     <include file="$(find authoring)/launch/joint_state_pub.launch">  
         <arg name="only_virtual" value="$(arg only_virtual)" />
@@ -88,7 +50,6 @@
 
     <group if="$(arg with_utils)">
         <include file="$(find authoring)/launch/utils.launch">  
-            <arg name="use_relaxed_ik" default="false"/>
             <arg name="only_virtual" default="$(arg only_virtual)"/>
         </include>
     </group>
