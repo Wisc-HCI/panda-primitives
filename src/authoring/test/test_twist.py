@@ -11,8 +11,8 @@ def test_twist():
     rate = rospy.Rate(10) # 10hz
 
     # For some reason, a single message does not go through so need to
-    # send at least 4.
-    for i in range(4):
+    # send at least 2.
+    for i in range(2):
 
         hybrid_pose = HybridPose()
         hybrid_pose.sel_vector = [1,1,1,0,0,0]
