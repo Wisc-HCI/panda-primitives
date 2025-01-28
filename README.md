@@ -24,7 +24,7 @@ You will need:
     ```bash
     xhost +local:
     ```
-    
+
     Now  build the container image and start the container. Make sure you are in this root directory. These commands mount on the current directory as the containers file system so any changes you make to the files on your host machine will be mirrored in the container. These commands also allow the containers display to be forwarded to your host machine so that you can see it.
     ```bash
     sudo docker build -t panda-prim .
@@ -41,7 +41,7 @@ You will need:
 ## Running
 
 
-1. [SKIP FOR SIMULATION] In the **panda-primitives-control** repo, run:
+1. [SKIP FOR SIMULATION] In the **panda-primitives-control** container, run:
     `roslaunch controller mover_test.launch`
 
 2. Run one of the following:
@@ -49,7 +49,10 @@ You will need:
     * [ON ROBOT] `roslaunch authoring all.launch`
 
 3. In a seperate terminal (still in your docker container), run:
-    `rosrun authoring test_parser.py`
+    ```bash
+    source devel/setup.bash
+    rosrun authoring test_parser.py
+    ```
 
 ---
 
