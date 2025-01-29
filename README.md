@@ -15,10 +15,14 @@ You will need:
 
 
 ## Setup
+1. Bring in the submodules:
+    ```bash
+    git submodule update --init --recursive
+    ```
 
-1. [SKIP FOR SIMULATION] Setup up [panda-primitives-control](https://github.com/wisc-HCI/panda-primitives-control) by following the instructions in that repo's README.md.
+2. [SKIP FOR SIMULATION] Setup up [panda-primitives-control](https://github.com/wisc-HCI/panda-primitives-control) by following the instructions in that repo's README.md.
 
-2. Setup this repo.
+3. Setup this repo.
 
     First set up display forwarding:
     ```bash
