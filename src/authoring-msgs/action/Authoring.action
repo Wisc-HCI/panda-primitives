@@ -1,8 +1,0 @@
-#goal definition
-authoring_msgs/Action goal
----
-#result definition
-std_msgs/Bool success
----
-#feedback
-int32[] progress

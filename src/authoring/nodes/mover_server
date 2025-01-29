@@ -23,6 +23,9 @@ CAMERA_FRAME = "rotated_camera"
 class AuthoringAction(object):
 
     def __init__(self, name):
+        # params
+        self._virtual = rospy.get_param("~only_virtual")
+
         self._action_name = name
         self._freq = 1000
         self._tfBuffer = tf2_ros.Buffer()
@@ -109,6 +112,8 @@ class AuthoringAction(object):
         # cam_2_ee.header.stamp = rospy.Time.now()
         # self._tfBuffer.set_transform(cam_2_ee,"mover")
 
+    
+
     def on_deformation(self, msg):
         self._deformation.linear.x += np.round(msg.linear.x,3) * self._deformation_smoothing
         self._deformation.linear.y += np.round(msg.linear.y,3) * self._deformation_smoothing
@@ -184,6 +189,7 @@ class AuthoringAction(object):
         #    self._as.set_succeeded(self._result)
         #return
         #print(goal)
+
         self._current_action = None
         self._angle_move = None
         self._waiting_for = None
@@ -204,8 +210,11 @@ class AuthoringAction(object):
         if goal.goal.type != goal.goal.VIEW and goal.goal.type != goal.goal.CAMERA_VELOCITY:
             #if self._camera_control:
             #    self.camera_control(False)
+
             self._starting_pose = self.get_pose_from_trans(self._tfBuffer.lookup_transform("panda_link0", "panda_gripper", rospy.Time(0)))
-            self.get_pose_rot(self._starting_pose.pose,goal.goal.pose.constraint_frame)
+            
+
+            self.get_pose_rot(self._starting_pose.pose, goal.goal.pose.constraint_frame)
         else:
             t = rospy.Time.now()
             goal.goal.pose.header.frame_id = REFERENCE_FRAME
@@ -221,8 +230,10 @@ class AuthoringAction(object):
             p = self.get_pose_from_trans(cam_ee_goal)
             goal.goal.pose.pose = p.pose 
             self._starting_pose = self.get_pose_from_trans(self._tfBuffer.lookup_transform("panda_link0", "sim_panda_gripper", rospy.Time(0)))
-            
+        
+
             self.get_pose_rot(self._starting_pose.pose,goal.goal.pose.constraint_frame)
+            
 
         # WHY?
         #if goal.goal.type == goal.goal.MOVE_FORCE:
@@ -707,6 +718,7 @@ class AuthoringAction(object):
         return (linear,angular)
     
     def get_pose_from_trans(self,t):
+
         p=PoseStamped()
         p.header=t.header
         p.pose.position.x = t.transform.translation.x

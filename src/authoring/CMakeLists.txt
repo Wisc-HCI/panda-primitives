@@ -99,27 +99,13 @@ install(DIRECTORY
 )
 
 catkin_install_python(PROGRAMS
-    nodes/rviz_viewer.py
-    nodes/start_here.py
-    nodes/parser
     nodes/planner
-    nodes/mover
-    nodes/poi
     nodes/simulator
     nodes/static_publisher
     nodes/tf_printer
-    nodes/r_ik_wrapper
-    nodes/space_mouse
-    nodes/test_parser.py
-    nodes/virtual_camera_manager
-    nodes/pc_publish
-    nodes/tracker
-    nodes/clipping_task
-    nodes/folding_task
     nodes/rviz_manager
-    nodes/recorder
-    nodes/socket
-    nodes/detector
+    test/test_twist.py
+    test/test_wipe.py
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 install(TARGETS pandaJacob
