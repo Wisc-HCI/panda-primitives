@@ -1,3 +1,12 @@
+"""
+Tests untwisting a large bolt ~1 rotation with the UNTWIST command.
+Bolt need to be placed at (x,y,z) = (0.52, 0, -0.24). You can eyeball
+this as the place where the gripper first goes down before closing.
+
+Note: If the gripper does not grasp the bolt, it will "reset" without
+doing any twisting.
+"""
+
 import copy
 
 import rospy
