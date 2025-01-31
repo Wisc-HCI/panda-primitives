@@ -1,6 +1,9 @@
 """
 Tests gripper commands GRASP and RELEASE. Gripper should open and 
-then close 3 seconds after.
+then close 3 seconds after. 
+
+Note: The gripper needs to be given something to grasp. If it 
+doesn't have something, it will go to the reset position and not open.
 """
 
 
@@ -20,7 +23,6 @@ def test_gripper():
     for i in range(2):
 
         action = Action(type=8,  # GRASP
-                        item=String(data="BOLT") # NOT SURE IF THIS IS CORRECT
                         )
 
         cmd = Command()
@@ -41,7 +43,6 @@ def test_gripper():
     for i in range(2):
 
         action = Action(type=9,  # RELEASE
-                        item=String(data="BOLT") # NOT SURE IF THIS IS CORRECT
                         )
 
         cmd = Command()
@@ -55,7 +56,7 @@ def test_gripper():
 
 
 if __name__ == '__main__':
-    rospy.init_node('test_twist', anonymous=True)
+    rospy.init_node('teset_gripper', anonymous=True)
     
     test_gripper()
  

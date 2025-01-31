@@ -106,6 +106,7 @@ catkin_install_python(PROGRAMS
     nodes/rviz_manager
     test/test_twist.py
     test/test_wipe.py
+    test/test_gripper.py
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 install(TARGETS pandaJacob
