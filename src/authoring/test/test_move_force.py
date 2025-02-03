@@ -65,7 +65,7 @@ def test_move_force():
     hybrid_pose = HybridPose()
     hybrid_pose.pose.position.x=0.5 # Forward
     hybrid_pose.pose.position.y=0.2  # Sideways
-    # hybrid_pose.pose.position.z=0.1 # Up
+    hybrid_pose.pose.position.z=-0.23 # Up
     # hybrid_pose.sel_vector = [1,1,0,0,0,0]
     
     # This is facing Downward (x=0, y=0, z=0, w=1)
