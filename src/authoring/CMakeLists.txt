@@ -107,6 +107,7 @@ catkin_install_python(PROGRAMS
     test/test_twist.py
     test/test_wipe.py
     test/test_gripper.py
+    test/test_move_force.py
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 install(TARGETS pandaJacob
