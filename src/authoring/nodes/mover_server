@@ -445,8 +445,9 @@ class AuthoringAction(object):
         
         linear_threshold = .001
         angular_threshold = .01
-        if np.all(np.abs(linear[:1])<linear_threshold) and linear[2]>0 and np.all(np.abs(angular)<angular_threshold):
-
+        if np.all(np.abs(linear[:2])<linear_threshold) and linear[2]>0 and np.all(np.abs(angular)<angular_threshold):
+            print(np.abs(linear[:2]), linear[2])
+            print(np.abs(angular))
             self._reached_position = True
             return True
         if (action.sim.data or self._virtual) and linear[2]>-.005:

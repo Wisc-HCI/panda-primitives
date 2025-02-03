@@ -738,8 +738,13 @@ class Planner(object):
             goal.goal = action
             self._client.send_goal(goal)
             print(self._client.wait_for_result())
-            result = self._client.get_result().success.data
-            if not result:
+
+            result_data = self._client.get_result()
+            print("RESULT:", result_data)
+            if result_data:
+                result = result_data.success.data
+            if not result_data or not result:
+                print("FAILED PLAN")
                 self._event_pub.publish("display_message;Failed Plan")
                 self._plan = []
                 goal = authoring_msgs.msg.AuthoringGoal()
