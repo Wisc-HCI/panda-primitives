@@ -36,7 +36,7 @@ def test_reset():
 
         action = Action(type=Action.RESET,  # RESET
                         poses=poses, 
-                        item=String(data="WHITEBOARD_ERASER") # NOT SURE IF THIS IS CORRECT
+                        item=String(data="RESET") # NOT SURE IF THIS IS CORRECT
                         )
 
 
