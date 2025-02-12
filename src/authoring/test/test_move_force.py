@@ -34,7 +34,7 @@ def test_move_force():
         hybrid_pose.constraint_frame.w = 1 
 
         header = Header()
-        header.stamp = rospy.Time.now() + rospy.Duration(0.05)  # 0.5 seconds into the future  # Current time
+        header.stamp = rospy.Time.now() + rospy.Duration()  # 0.5 seconds into the future  # Current time
         hybrid_pose.header = header
 
         action = Action(type=6,  # MOVE
@@ -71,10 +71,14 @@ def test_move_force():
     # This is facing Downward (x=0, y=0, z=0, w=1)
     hybrid_pose.pose.orientation.w=1
 
+    # The mover does something where it transforms based on the constraint frame (quaternion)
+    # To have no transform, the following should be set: x=0, y=0, z=0, w=1
+    hybrid_pose.constraint_frame.w = 1 
+
 
     # Timestamp required
     header = Header()
-    header.stamp = rospy.Time.now() + rospy.Duration(0.5)  # 0.5 seconds into the future  # Current time
+    header.stamp = rospy.Time.now() + rospy.Duration(3)  # 0.5 seconds into the future  # Current time
     hybrid_pose.header = header
     
 
