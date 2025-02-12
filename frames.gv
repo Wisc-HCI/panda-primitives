@@ -1,0 +1,24 @@
+digraph G {
+"panda_link0" -> "external_view"[label="Broadcaster: /external_view_static_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1739325085.418 sec old)\nBuffer length: 0.000 sec\n"];
+"camera_base" -> "internal_camera_base"[label="Broadcaster: /internal_camera_static_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1739325085.418 sec old)\nBuffer length: 0.000 sec\n"];
+"panda_link8" -> "camera_base"[label="Broadcaster: /panda_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1739325085.418 sec old)\nBuffer length: 0.000 sec\n"];
+"internal_rgb_camera_link" -> "rotated_camera"[label="Broadcaster: /rotated_camera_static_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1739325085.418 sec old)\nBuffer length: 0.000 sec\n"];
+"panda_hand" -> "sim_panda_gripper"[label="Broadcaster: /sim_ee_static_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1739325085.418 sec old)\nBuffer length: 0.000 sec\n"];
+"panda_link8" -> "panda_hand"[label="Broadcaster: /panda_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1739325085.418 sec old)\nBuffer length: 0.000 sec\n"];
+"camera_base" -> "camera_body"[label="Broadcaster: /panda_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1739325085.418 sec old)\nBuffer length: 0.000 sec\n"];
+"camera_base" -> "camera_visor"[label="Broadcaster: /panda_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1739325085.418 sec old)\nBuffer length: 0.000 sec\n"];
+"ft_sensor_link" -> "panda_link8"[label="Broadcaster: /panda_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1739325085.418 sec old)\nBuffer length: 0.000 sec\n"];
+"panda_link7" -> "ft_sensor_link"[label="Broadcaster: /panda_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1739325085.418 sec old)\nBuffer length: 0.000 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1739325085.418"[ shape=plaintext ] ;
+ }->"panda_link0";
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1739325085.418"[ shape=plaintext ] ;
+ }->"internal_rgb_camera_link";
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 1739325085.418"[ shape=plaintext ] ;
+ }->"panda_link7";
+}
