@@ -661,6 +661,7 @@ class Planner(object):
             print("done cancelling")
 
     def on_command(self,msg):
+        print("Get Command ")
         self._pause = False
         self._type = msg.type
         starting = 0
