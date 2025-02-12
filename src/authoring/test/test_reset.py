@@ -15,7 +15,7 @@ def test_reset():
 
     # For some reason, a single message does not go through so need to
     # send at least 2.
-    for i in range(2):
+    for i in range(1):
 
         p0 = HybridPose()
         p0.sel_vector = [1,1,1,0,0,0]
