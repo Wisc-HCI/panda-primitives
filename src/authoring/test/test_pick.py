@@ -27,6 +27,8 @@ def test_pick():
     # To have no transform, the following should be set: x=0, y=0, z=0, w=1
     hybrid_pose.constraint_frame.w = 1 
 
+    # Once we specify the pick position, the planner will create pre-pick and post-pick
+    # positions, so we need to use a HybridPoseArray to store these positions
     poses = HybridPoseArray()
     poses.poses = [hybrid_pose]
 
