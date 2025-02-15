@@ -20,7 +20,7 @@ def test_pick():
     hybrid_pose.sel_vector = [1,1,1,0,0,0]
     hybrid_pose.pose.position.x=0.52 # Forward
     hybrid_pose.pose.position.y=0.0  # Sideways
-    hybrid_pose.pose.position.z=-0.24 # Up
+    hybrid_pose.pose.position.z=0.0 # Up
         
     # This is facing Downward (x=0, y=0, z=0, w=1)
     hybrid_pose.pose.orientation.w=1

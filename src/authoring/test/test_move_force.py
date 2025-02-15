@@ -17,9 +17,9 @@ def test_move_force():
     
 
     hybrid_pose = HybridPose()
-    hybrid_pose.pose.position.x = 0.5
-    hybrid_pose.pose.position.y = 0.3
-    hybrid_pose.pose.position.z = 0.4
+    hybrid_pose.pose.position.x = 0.3
+    hybrid_pose.pose.position.y = 0
+    hybrid_pose.pose.position.z = 0
 
 
     hybrid_pose.pose.orientation.w = 1
@@ -35,14 +35,14 @@ def test_move_force():
 
 
     action = Action(
-        type=16,  # MOVE_FORCE，对应定义中的数值（例如 16）
+        type=16,  # MOVE_FORCE
         pose=hybrid_pose,
-        item=String(data="BOLT")  # 可选，标识操作对象
+        item=String(data="BOLT")  
     )
 
-        # 构造 Command 消息，类型 2 通常表示 EXEC 执行命令
+        
     cmd = Command()
-    cmd.type = 2  # EXEC 模式
+    cmd.type = 2  # exection mode
     cmd.core_action = [action]
 
     rospy.loginfo("Publishing MOVE_FORCE command:\n%s", cmd)
