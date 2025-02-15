@@ -1,18 +1,20 @@
+"""
+Test the pick action. Gripper should move to the specified position and close. However, the gripper
+won't directly move to it, but rather move to a pre-pick position which is 8cm above the pick position,
+then to the pick position. Once it closed, it will return to the pre-pick position.
+"""
+
 #!/usr/bin/env python3
 
 import copy
-
 import rospy
 from std_msgs.msg import String
 from authoring_msgs.msg import Command, Action 
 from panda_ros_msgs.msg import HybridPose, HybridPoseArray
 
-
 def test_pick():
     pub = rospy.Publisher('/parser/command', Command, queue_size=1, latch=True)
     rate = rospy.Rate(10) # 10hz
-
-
 
     hybrid_pose = HybridPose()
     hybrid_pose.sel_vector = [1,1,1,0,0,0]
@@ -32,27 +34,25 @@ def test_pick():
     poses = HybridPoseArray()
     poses.poses = [hybrid_pose]
 
+     # Timestamp required
+    header = Header()
+    header.stamp = rospy.Time.now()
+    hybrid_pose.header = header
+
     action = Action(type=0,  # PICK
                     poses=poses, 
                     item=String(data="BOLT") # NOT SURE IF THIS IS CORRECT
                     )
-
-        
-
-
         
     cmd = Command()
     cmd.type = 2  # EXEC
     cmd.core_action = [action]
 
-
     rospy.loginfo(cmd)
     pub.publish(cmd)
     rate.sleep()     
 
-
 if __name__ == '__main__':
     rospy.init_node('test_twist', anonymous=True)
-    
     test_pick()
  
