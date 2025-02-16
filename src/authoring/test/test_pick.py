@@ -1,14 +1,13 @@
+#!/usr/bin/env python3
 """
 Test the pick action. Gripper should move to the specified position and close. However, the gripper
 won't directly move to it, but rather move to a pre-pick position which is 8cm above the pick position,
 then to the pick position. Once it closed, it will return to the pre-pick position.
 """
 
-#!/usr/bin/env python3
-
 import copy
 import rospy
-from std_msgs.msg import String
+from std_msgs.msg import String, Header
 from authoring_msgs.msg import Command, Action 
 from panda_ros_msgs.msg import HybridPose, HybridPoseArray
 
@@ -27,14 +26,14 @@ def test_pick():
 
     # The mover does something where it transforms based on the constraint frame (quaternion)
     # To have no transform, the following should be set: x=0, y=0, z=0, w=1
-    hybrid_pose.constraint_frame.w = 1 
+    hybrid_pose.constraint_frame.w=1 
 
     # Once we specify the pick position, the planner will create pre-pick and post-pick
     # positions, so we need to use a HybridPoseArray to store these positions
     poses = HybridPoseArray()
     poses.poses = [hybrid_pose]
 
-     # Timestamp required
+    # Timestamp required
     header = Header()
     header.stamp = rospy.Time.now()
     hybrid_pose.header = header
