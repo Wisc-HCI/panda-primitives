@@ -43,7 +43,7 @@ def test_move_unknown():
     poses = HybridPoseArray()
     poses.poses = [hybrid_pose1, hybrid_pose2]
 
-    action = Action(type=21,  # 21MOVE_UNKNOWN
+    action = Action(type=4,  # MOVE_OBJECT
                     poses=poses, 
                     item=String(data="BOLT_box") # NOT SURE IF THIS IS CORRECT
                     )
