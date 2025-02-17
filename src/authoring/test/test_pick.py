@@ -2,7 +2,8 @@
 """
 Test the pick action. Gripper should move to the specified position and close. However, the gripper
 won't directly move to it, but rather move to a pre-pick position which is 8cm above the pick position,
-then to the pick position. Once it closed, it will return to the pre-pick position.
+then move slowly with force control to the pick position. Once it closed, it will return to the pre-pick
+position.
 """
 
 import copy
@@ -38,20 +39,22 @@ def test_pick():
     header.stamp = rospy.Time.now()
     hybrid_pose.header = header
 
+    # Note that if detected that there is no item between the gripper, the gripper will open and 
+    # return to the reset position.
     action = Action(type=0,  # PICK
                     poses=poses, 
-                    item=String(data="BOLT") # NOT SURE IF THIS IS CORRECT
+                    item=String(data="BOLT") # We assume that the item is a bolt
                     )
         
     cmd = Command()
     cmd.type = 2  # EXEC
-    cmd.core_action = [action]
+    cmd.core_action = [action] 
 
     rospy.loginfo(cmd)
     pub.publish(cmd)
     rate.sleep()     
 
 if __name__ == '__main__':
-    rospy.init_node('test_twist', anonymous=True)
+    rospy.init_node('test_pick', anonymous=True)
     test_pick()
  

@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """
-Test the pick action. Gripper should move to the specified position and close. However, the gripper
-won't directly move to it, but rather move to a pre-pick position which is 8cm above the pick position,
-then to the pick position. Once it closed, it will return to the pre-pick position.
+Test the move_unknown action. The robot will first execute a PICK action to grasp an unknown object at a 
+specified position, then execute PLACE action to put down it at a specified position.
+
+Unknown object means that the object is not in the robot's database and the robot will handle it in a 
+general way. For example, no matter what the container is, the robot will just drop it.
+
 """
+
 
 import copy
 import rospy
@@ -15,6 +19,7 @@ def test_move_unknown():
     pub = rospy.Publisher('/parser/command', Command, queue_size=1, latch=True)
     rate = rospy.Rate(10) # 10hz
 
+    # Create a pick pose.
     hybrid_pose1 = HybridPose()
     hybrid_pose1.sel_vector = [1,1,1,0,0,0]
     hybrid_pose1.pose.position.x=0.52 # Forward
@@ -28,7 +33,7 @@ def test_move_unknown():
     # To have no transform, the following should be set: x=0, y=0, z=0, w=1
     hybrid_pose1.constraint_frame.w=1 
 
-    #Create another pose
+    #Create place pose
     hybrid_pose2 = HybridPose()
     hybrid_pose2.sel_vector = [1,1,1,0,0,0]
     hybrid_pose2.pose.position.x=0.52 # Forward
@@ -38,14 +43,14 @@ def test_move_unknown():
     hybrid_pose2.pose.orientation.w=1
     hybrid_pose2.constraint_frame.w=1 
 
-    # Once we specify the pick position, the planner will create pre-pick and post-pick
-    # positions, so we need to use a HybridPoseArray to store these positions
+    # We specify the pick and place position and store them in a HybridPoseArray
     poses = HybridPoseArray()
     poses.poses = [hybrid_pose1, hybrid_pose2]
 
-    action = Action(type=21,  # 21MOVE_UNKNOWN
+    action = Action(type=21,  # MOVE_UNKNOWN
                     poses=poses, 
-                    item=String(data="BOLT_box") # NOT SURE IF THIS IS CORRECT
+                    # Since it's unknown, no matter what word after "BOLT_", the robot will drop it
+                    item=String(data="BOLT_box") # Use "_" to separate the object and the container
                     )
         
     cmd = Command()
@@ -57,6 +62,6 @@ def test_move_unknown():
     rate.sleep()     
 
 if __name__ == '__main__':
-    rospy.init_node('test_twist', anonymous=True)
+    rospy.init_node('test_move_unknown', anonymous=True)
     test_move_unknown()
  

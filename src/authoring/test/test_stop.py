@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+"""
+Test the stop action. The robot will not abruptly halt but will instead move to a predefined safe 
+position. This position serves as a default resting or home location, which is typically appended 
+at the end of a sequence of planned motions to guide the robot back to its designated stop position.
+Totally the same as MOVE action, but we store the position.
+"""
+
 
 import copy
 
@@ -12,6 +19,7 @@ def test_stop():
     pub = rospy.Publisher('/parser/command', Command, queue_size=1, latch=True)
     rate = rospy.Rate(10) # 10hz
 
+    # Define the home position for the robot
     hybrid_pose1 = HybridPose()
     hybrid_pose1.sel_vector = [1,1,1,0,0,0]
     hybrid_pose1.pose.position.x=0.52 # Forward
@@ -44,7 +52,7 @@ def test_stop():
 
 
 if __name__ == '__main__':
-    rospy.init_node('test_twist', anonymous=True)
+    rospy.init_node('test_stop', anonymous=True)
     
     test_stop()
  

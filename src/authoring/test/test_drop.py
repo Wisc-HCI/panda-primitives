@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
-Test the pick action. Gripper should move to the specified position and close. However, the gripper
-won't directly move to it, but rather move to a pre-pick position which is 8cm above the pick position,
-then to the pick position. Once it closed, it will return to the pre-pick position.
+Test the drop action. Gripper should move to the specified position and release. However, the gripper
+won't directly move to it, but rather move to a pre-drop position which is 8cm above the drop position,
+then move IMMEDIATELY to the drop position. Once it released, it will return to the pre-drop 
+position.
+Not like place, the drop action put down things quickly.
 """
 
 import copy
@@ -28,7 +30,7 @@ def test_place():
     # To have no transform, the following should be set: x=0, y=0, z=0, w=1
     hybrid_pose.constraint_frame.w=1 
 
-    # Once we specify the pick position, the planner will create pre-pick and post-pick
+    # Once we specify the drop position, the planner will create pre-drop and post-drop
     # positions, so we need to use a HybridPoseArray to store these positions
     poses = HybridPoseArray()
     poses.poses = [hybrid_pose]
@@ -40,7 +42,7 @@ def test_place():
 
     action = Action(type=24,  # DROP
                     poses=poses, 
-                    item=String(data="BOLT") # NOT SURE IF THIS IS CORRECT
+                    item=String(data="BOLT") # We assume that the item is a bolt
                     )
         
     cmd = Command()
