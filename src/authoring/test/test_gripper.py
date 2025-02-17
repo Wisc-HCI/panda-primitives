@@ -3,7 +3,7 @@ Tests gripper commands GRASP and RELEASE. Gripper should open and
 then close 3 seconds after. 
 
 Note: The gripper needs to be given something to grasp. If it 
-doesn't have something, it will go to the reset position and not open.
+doesn't have something, it will go to the reset position.
 """
 
 

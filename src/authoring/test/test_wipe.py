@@ -32,11 +32,14 @@ def test_wipe():
     # (starting at same place as eraser), P2 is upper right, P3 is lower right, P4 is lower left
     p1 = copy.deepcopy(p0)
     p1.pose.position.x=0.6
-    p1.pose.position.z=-0.26
+
+
     p2 = copy.deepcopy(p1)
-    p2.pose.position.y=0.1 # Move right abit
+    p2.pose.position.y=0.1 # Move right a bit
+
     p3 = copy.deepcopy(p2)
     p3.pose.position.x=0.5
+    
     p4 = copy.deepcopy(p1)
     p4.pose.position.x=0.5
 
