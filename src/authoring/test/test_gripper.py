@@ -14,44 +14,36 @@ from panda_ros_msgs.msg import HybridPose, HybridPoseArray
 
 
 def test_gripper():
-    pub = rospy.Publisher('/parser/command', Command, queue_size=1)
+    pub = rospy.Publisher('/parser/command', Command, queue_size=1, latch=True)
     rate = rospy.Rate(10) # 10hz
 
     # FIRST GRASP
-    # For some reason, a single message does not go through so need to
-    # send at least 2.
-    for i in range(2):
+    action = Action(type=8,  # GRASP
+                    )
 
-        action = Action(type=8,  # GRASP
-                        )
+    cmd = Command()
+    cmd.type = 2  # EXEC
+    cmd.core_action = [action]
 
-        cmd = Command()
-        cmd.type = 2  # EXEC
-        cmd.core_action = [action]
-
-        rospy.loginfo(cmd)
-        pub.publish(cmd)
-        rate.sleep()
+    rospy.loginfo(cmd)
+    pub.publish(cmd)
+    rate.sleep()
 
     # Wait for 3 seconds
     pause = rospy.Rate(1/3)
     pause.sleep()
 
     # THEN RELEASE
-    # For some reason, a single message does not go through so need to
-    # send at least 2.
-    for i in range(2):
+    action = Action(type=9,  # RELEASE
+                    )
 
-        action = Action(type=9,  # RELEASE
-                        )
+    cmd = Command()
+    cmd.type = 2  # EXEC
+    cmd.core_action = [action]
 
-        cmd = Command()
-        cmd.type = 2  # EXEC
-        cmd.core_action = [action]
-
-        rospy.loginfo(cmd)
-        pub.publish(cmd)
-        rate.sleep()
+    rospy.loginfo(cmd)
+    pub.publish(cmd)
+    rate.sleep()
 
 
 
