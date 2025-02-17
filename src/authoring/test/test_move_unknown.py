@@ -4,7 +4,7 @@ Test the move_unknown action. The robot will first execute a PICK action to gras
 specified position, then execute PLACE action to put down it at a specified position.
 
 Unknown object means that the object is not in the robot's database and the robot will handle it in a 
-general way. For example, no matter what the container is, the robot will just drop it.
+general way. For example, no matter what the container is, the robot will just place it.
 
 """
 
