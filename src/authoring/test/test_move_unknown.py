@@ -49,7 +49,7 @@ def test_move_unknown():
 
     action = Action(type=21,  # MOVE_UNKNOWN
                     poses=poses, 
-                    # Since it's unknown, no matter what word after "BOLT_", the robot will drop it
+                    # Since it's unknown, no matter what word after "BOLT_", the robot will place it
                     item=String(data="BOLT_box") # Use "_" to separate the object and the container
                     )
         
