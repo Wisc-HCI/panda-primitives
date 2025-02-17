@@ -3,7 +3,7 @@
 Test the stop action. The robot will not abruptly halt but will instead move to a predefined safe 
 position. This position serves as a default resting or home location, which is typically appended 
 at the end of a sequence of planned motions to guide the robot back to its designated stop position.
-Totally the same as MOVE action, but we store the position.
+Totally the same as MOVE action, but we store the position(for future use).
 """
 
 
