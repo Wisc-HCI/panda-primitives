@@ -3,7 +3,7 @@
 Test the move_object action. The robot will first execute a PICK action to grasp a known object at a 
 specified position, then execute PLACE action to put down it at a specified position.
 
-known object means that the object is already in the robot's database and the robot knows how to handle
+Known object means that the object is already in the robot's database and the robot knows how to handle
 it. For example, if the place where the robot puts down the object is a box, the robot will just drop it 
 instead of placing it.
 """
@@ -47,10 +47,11 @@ def test_move_object():
     poses = HybridPoseArray()
     poses.poses = [hybrid_pose1, hybrid_pose2]
 
-    # Since we place the bult in a box, the robot will drop it instead of placing it
+    # Since we place the bult in a box, the robot will drop it
     action = Action(type=4,  # MOVE_OBJECT
                     poses=poses, 
-                    item=String(data="BOLT_box") # Use "_" to separate the object and the container
+                    # If we change "BOLT_box" to "BOLT_table" or else, the robot will place it
+                    item=String(data="BOLT_box") # We must use "_" to indicate the object and the container
                     )
         
     cmd = Command()

@@ -13,7 +13,7 @@ from std_msgs.msg import String, Header
 from authoring_msgs.msg import Command, Action 
 from panda_ros_msgs.msg import HybridPose, HybridPoseArray
 
-def test_place():
+def test_drop():
     pub = rospy.Publisher('/parser/command', Command, queue_size=1, latch=True)
     rate = rospy.Rate(10) # 10hz
 
@@ -54,6 +54,6 @@ def test_place():
     rate.sleep()     
 
 if __name__ == '__main__':
-    rospy.init_node('test_twist', anonymous=True)
-    test_place()
+    rospy.init_node('test_drop', anonymous=True)
+    test_drop()
  
