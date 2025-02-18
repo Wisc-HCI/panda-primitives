@@ -721,13 +721,13 @@ class Planner(object):
         return h
 
     def run_plan(self,starting):
-        print("running plan")
+        # print("running plan")
         result = False
 
         for action in self._plan[starting:]:
             if(self.get_type(action) == ""):
                 print("unknown action" + str(action))
-            print("At action "+self.get_type(action))
+            # print("At action "+self.get_type(action))
             if action.finished.data:
                 event = "action_finished;"+self.get_type(action)
                 if self.get_type(action) != "Reset":
@@ -737,9 +737,15 @@ class Planner(object):
             goal = authoring_msgs.msg.AuthoringGoal()
             goal.goal = action
             self._client.send_goal(goal)
-            print(self._client.wait_for_result())
-            result = self._client.get_result().success.data
-            if not result:
+            self._client.wait_for_result()
+            # print(self._client.wait_for_result())
+
+            result_data = self._client.get_result()
+            # print("RESULT:", result_data)
+            if result_data:
+                result = result_data.success.data
+            if not result_data or not result:
+                print("FAILED PLAN")
                 self._event_pub.publish("display_message;Failed Plan")
                 self._plan = []
                 goal = authoring_msgs.msg.AuthoringGoal()
