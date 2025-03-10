@@ -52,10 +52,17 @@ You will need:
     * [SIMULATION] `roslaunch authoring all.launch only_virtual:=true`
     * [ON ROBOT] `roslaunch authoring all.launch`
 
-3. In a seperate terminal (still in your docker container), run:
+3. In a seperate terminal (still in your docker container), navigate to src/dexterity-interface and set up [dexterity-interface](https://github.com/Wisc-HCI/dexterity-interface)
+   by following the instructions in the repository's readme.md, then open the chat interface to interact with llm:
     ```bash
+    cd src/dexterity-interface
+    python3 chat.py
+    ```
+    Once we finished talking with llm, its response will be record at output.txt, then we run:
+    ```bash
+    cd ../..
     source devel/setup.bash
-    rosrun authoring test_twist.py
+    roslaunch authoring llm_control.launch
     ```
 
     You can also run any other scripts in the authoring/test folder in this same manner.
