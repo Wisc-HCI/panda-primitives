@@ -20,3 +20,6 @@
 	path = src/rviz_camera_stream
 	url = https://github.com/lucasw/rviz_camera_stream.git
 	branch = noetic-devel
+[submodule "src/dexterity-interface"]
+	path = src/dexterity-interface
+	url = https://github.com/Wisc-HCI/dexterity-interface.git

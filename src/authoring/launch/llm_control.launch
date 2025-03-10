@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+   <node pkg="authoring" type="llm_ros_listener.py" name="llm_ros_listener" output="screen"/>
+   <node pkg="authoring" type="llm_ros_executor.py" name="llm_ros_executor" />
+   
+</launch>
