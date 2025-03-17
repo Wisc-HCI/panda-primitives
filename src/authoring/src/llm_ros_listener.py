@@ -10,7 +10,7 @@ def get_chat_instructions():
         str: The content of `output.txt` if found, otherwise an error message.
     """
     folder = os.path.dirname(__file__)  # Get the directory of the current script
-    file_path = os.path.join(folder, "../../dexterity-interface/output.txt")  # Define the path to the output file
+    file_path = os.path.join(folder, "../../../../output.txt")  # Define the path to the output file
     
     try:
         with open(file_path, "r") as f:
