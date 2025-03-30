@@ -44,7 +44,6 @@ if __name__ == "__main__":
             command = parts[1] if len(parts) > 1 else parts[0]
             commands.append(command.strip())
 
-    # **New Modification: Combine all commands into a single string before sending**
     combined_commands = "\n".join(commands)  # Join all commands with newline characters
     rospy.loginfo(f"Publishing complete command set:{combined_commands}")
     
