@@ -4,11 +4,13 @@ import rospy
 from std_msgs.msg import String, Header
 from authoring_msgs.msg import Command, Action 
 from panda_ros_msgs.msg import HybridPose, HybridPoseArray
+from geometry_msgs.msg import Quaternion
+
 
 # Declare a global list to store accumulated commands
 commands = []
 
-def move(x, y, z):
+def move(x=0.2, y=0.0, z=0.0, orientation=None):
     """
     Creates an action message for the MOVE operation.
     
@@ -20,7 +22,12 @@ def move(x, y, z):
     hybrid_pose.pose.position.x = x
     hybrid_pose.pose.position.y = y
     hybrid_pose.pose.position.z = z
-    hybrid_pose.pose.orientation.w = 1
+
+    if orientation:
+        hybrid_pose.pose.orientation = orientation
+    else:
+        hybrid_pose.pose.orientation.w = 1  # default forward grasp
+
     hybrid_pose.constraint_frame.w = 1
 
     action = Action(
@@ -29,7 +36,7 @@ def move(x, y, z):
     )
     return action
 
-def pick(x, y, z):
+def pick(x=0.2, y=0.0, z=0.0, orientation=None):
     """
     Creates an action message for the PICK operation.
     
@@ -41,8 +48,18 @@ def pick(x, y, z):
     hybrid_pose.pose.position.x = x
     hybrid_pose.pose.position.y = y
     hybrid_pose.pose.position.z = z
-    hybrid_pose.pose.orientation.w = 1
+
+    if orientation:
+        hybrid_pose.pose.orientation = orientation
+    else:
+        hybrid_pose.pose.orientation.w = 1  # default forward grasp
+
     hybrid_pose.constraint_frame.w = 1
+
+    # Assign a timestamp (necessary to avoid potential errors)
+    header = Header()
+    header.stamp = rospy.Time.now()
+    hybrid_pose.header = header
 
     poses = HybridPoseArray()
     poses.poses = [hybrid_pose]
@@ -54,7 +71,7 @@ def pick(x, y, z):
     )
     return action
 
-def place(x, y, z):
+def place(x=0.2, y=0.0, z=0.0, orientation=None):
     """
     Creates an action message for the PLACE operation.
     
@@ -66,7 +83,12 @@ def place(x, y, z):
     hybrid_pose.pose.position.x = x
     hybrid_pose.pose.position.y = y
     hybrid_pose.pose.position.z = z
-    hybrid_pose.pose.orientation.w = 1
+
+    if orientation:
+        hybrid_pose.pose.orientation = orientation
+    else:
+        hybrid_pose.pose.orientation.w = 1  # default forward grasp
+
     hybrid_pose.constraint_frame.w = 1
 
     # Assign a timestamp (necessary to avoid potential errors)
@@ -108,6 +130,24 @@ def stop():
     )
     return action
 
+def estimate_grasp_pose(object_name="BOLT"):
+    """
+    Use vision system to get desired grasping pose
+    Returns:
+        position: (x, y, z)
+        orientation: Quaternion
+    """
+    # hard code
+    position = (0.52, 0.0, 0.05)
+    orientation = Quaternion()
+    orientation.x = 0
+    orientation.y = 1  
+    orientation.z = 0
+    orientation.w = 0
+
+    return position, orientation
+
+
 def command_callback(msg):
     """
     Callback function that processes received commands from the '/llm_commands' topic.
@@ -147,10 +187,12 @@ def command_callback(msg):
                 continue  # skip error instruction
 
         if action == "PICK":
-            commands.append(pick(x, y, z))
+            pos, ori = estimate_grasp_pose()
+            commands.append(pick(x, y, z, orientation=ori))
             rospy.loginfo("Added a PICK action to the queue")
         elif action == "PLACE":
-            commands.append(place(x, y, z))
+            pos, ori = estimate_grasp_pose()
+            commands.append(place(x, y, z, orientation=ori))
             rospy.loginfo("Added a PLACE action to the queue")
         elif action == "MOVE":
             commands.append(move(x, y, z))
