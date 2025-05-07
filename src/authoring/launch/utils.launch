@@ -8,6 +8,15 @@
     <node pkg="authoring" type="mover_server" name="mover_server" output="screen">
         <param name="only_virtual" type="bool" value="$(arg only_virtual)" />
     </node>
+    
+    <node pkg="authoring" type="static_publisher" name="fake_camera_transform">
+        <param name="file_name" type="string" value="transforms.yaml" />
+        <param name="transform" type="string" value="fake_camera_transform" />
+    </node>
+    <node pkg="authoring" type="static_publisher" name="rgb_camera">
+        <param name="file_name" type="string" value="transforms.yaml" />
+        <param name="transform" type="string" value="rgb_camera" />
+    </node>
 
     <node pkg="authoring" type="static_publisher" name="rotated_camera_static_publisher">
         <param name="file_name" type="string" value="transforms.yaml" />
