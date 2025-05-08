@@ -111,6 +111,6 @@ catkin_install_python(PROGRAMS
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 install(TARGETS pandaJacob
-  RUNTIME DESTINATION lib/authoring
+  RUNTIME DESTINATION lib/panda-primitives
 )
 

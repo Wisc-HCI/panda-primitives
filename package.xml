@@ -2,7 +2,7 @@
 <package>
   <name>panda-primitives</name>
   <version>0.1.0</version>
-  <description>Ros files for the authoring project</description>
+  <description>Ros files for the panda-primitives (previously authoring) project</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->

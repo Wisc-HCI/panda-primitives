@@ -38,7 +38,7 @@ You will need:
 
     You should now be in the docker container repo. Now build the repo.
     ```bash
-    catkin build authoring
+    catkin build panda-primitives
     source devel/setup.bash
     ```
 
@@ -49,16 +49,16 @@ You will need:
     `roslaunch controller mover_test.launch`
 
 2. Run one of the following:
-    * [SIMULATION] `roslaunch authoring all.launch only_virtual:=true`
-    * [ON ROBOT] `roslaunch authoring all.launch`
+    * [SIMULATION] `roslaunch panda-primitives all.launch only_virtual:=true`
+    * [ON ROBOT] `roslaunch panda-primitives all.launch`
 
 3. In a seperate terminal (still in your docker container), run:
     ```bash
     source devel/setup.bash
-    rosrun authoring test_twist.py
+    rosrun panda-primitives test_twist.py
     ```
 
-    You can also run any other scripts in the authoring/test folder in this same manner.
+    You can also run any other scripts in the panda-primitives/test folder in this same manner.
 
 ---
 
