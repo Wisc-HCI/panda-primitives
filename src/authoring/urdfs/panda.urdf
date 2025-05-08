@@ -273,7 +273,7 @@
   <joint name="panda_flange_joint" type="fixed">
     <parent link="ft_sensor_link"/>
     <child link="panda_flange"/>
-    <origin rpy="0 0 -0.785398163397" xyz="0 0 0.04"/>
+    <origin rpy="0 0 -0.785398163397" xyz="0 0 0.043"/>
   </joint>
 
 
