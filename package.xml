@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>authoring</name>
+  <name>panda-primitives</name>
   <version>0.1.0</version>
   <description>Ros files for the authoring project</description>
 
@@ -8,6 +8,7 @@
   <!-- Example:  -->
   <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
   <maintainer email="esenft@wisc.edu">Séverin Lemaignan</maintainer>
+   <maintainer email="mcschroder@wisc.edu">Mya Schroder</maintainer>
 
 
   <!-- One license tag required, multiple allowed, one license per tag -->
@@ -26,7 +27,8 @@
   <!-- Authors do not have to be maintianers, but could be -->
   <!-- Example: -->
   <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
-  <author >Emmanuel Senft</author>
+  <author>Emmanuel Senft</author>
+  <author> Mya Schroder </author>
 
 
   <!-- The *_depend tags are used to specify dependencies -->

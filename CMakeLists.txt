@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(authoring)
+project(panda-primitives)
 
 SET(CMAKE_CXX_FLAGS  "-O3 -fopenmp")
 

@@ -65,3 +65,10 @@ You will need:
 ## Notes:
 To view transforms:
 `rosrun rqt_tf_tree rqt_tf_tree`
+
+
+## Dependencies:
+- [panda_ros_msgs](https://github.com/emmanuel-senft/panda-ros-msgs/tree/study)
+- [authoring_msgs](https://github.com/emmanuel-senft/authoring-msgs/tree/study)
+- [rviz_camera_stream](https://github.com/lucasw/rviz_camera_stream)
+- [ros_numpy](https://github.com/eric-wieser/ros_numpy)
