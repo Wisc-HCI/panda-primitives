@@ -1,52 +1,71 @@
 # Panda Primitives
 
-This work aims to define Primitives (i.e. skills) for the Franka Emika Panda 7-DOF Robot that can be chained together to complete more complex tasks.
+This is ros package that used to define Primitives (i.e. skills) for the Franka Emika Panda 7-DOF Robot that can be chained together to complete more complex tasks.
 
 ## Prerequisites
-You will need:
-* For Simulation:
-    * Ubuntu machine
+For Simulation you will need:
+* Ubuntu machine with:
+    * Static IP of 192.168.1.XXX (Ex/ 192.168.1.5) and Netmask of 255.255.255.0 for the ethernet connected to the Panda. If you have also have a force torque sensor, the ethernet connected to that needs to be set to a static IP of 192.168.2.XXX (Ex/ 192.168.2.5).
     * [Docker Engine](https://docs.docker.com/engine/install/).
-* For Running on the Panda:
-    * Above requirements.
-    * Franka Emika Panda Robotic arm with a Force Torque Sensor. Reference  [panda-primitives-control](https://github.com/wisc-HCI/panda-primitives-control) for the specifics
-    * The control layer of the robot: [panda-primitives-control](https://github.com/wisc-HCI/panda-primitives-control).
+    * A ROS Workspace with this package clone under `src/`.
+    * The following ROS packages also cloned under `src/` in your ROS workspace:
+        * [panda_ros](https://github.com/Wisc-HCI/panda_ros)
+        * [PandController](https://github.com/Wisc-HCI/PandaController)
+        * [panda_ros_msgs](https://github.com/emmanuel-senft/panda-ros-msgs/tree/study)
+        * [authoring_msgs](https://github.com/emmanuel-senft/authoring-msgs/tree/study)
+        * [rviz_camera_stream](https://github.com/lucasw/rviz_camera_stream)
+        * [ros_numpy](https://github.com/eric-wieser/ros_numpy)
 
+        
+For Running on the Panda, you will need:
+* Above requirements.
+* The [Realtime Kernel Patch Kernel Patch](https://frankaemika.github.io/docs/installation_linux.html#setting-up-the-real-time-kernel) added to the Ubuntu Machine.
+* Franka Emika Panda 7 DOF Robot setup with the [FCI](https://frankaemika.github.io/docs/getting_started.html) and set to static IP of 192.168.1.XXX (Ex/ 192.168.1.3) and Netmask to 255.255.255.0.
+    * Robot system version: 4.2.X (FER pandas)
+    * Robot / Gripper Server version: 5 / 3
+* [Axio80-M20 Force Torque Sensor](https://www.ati-ia.com/products/ft/ft_models.aspx?id=Axia80-M20) installed on the Panda's End Effector and connected to the host computer via ethernet with IP 192.168.2.2 (or change the IP in src/PandaController/src/ForceTorqueListener.cpp).
 
 
 ## Setup
-1. Bring in the submodules:
-    ```bash
-    git submodule update --init --recursive
-    ```
+Make sure you run these commands in the root of your ROS Workspace (above `src/`)
 
-2. [SKIP FOR SIMULATION] Setup up [panda-primitives-control](https://github.com/wisc-HCI/panda-primitives-control) by following the instructions in that repo's README.md.
+First set up display forwarding:
+```bash
+xhost +local:
+```
 
-3. Setup this repo.
+Now  build the container image and start the container. Make sure you are in this root directory. These commands mount on the current directory as the containers file system so any changes you make to the files on your host machine will be mirrored in the container. These commands also allow the containers display to be forwarded to your host machine so that you can see it.
+```bash
+sudo docker build -f src/panda-primitives/Dockerfile -t panda-prim .
 
-    First set up display forwarding:
-    ```bash
-    xhost +local:
-    ```
+sudo docker run --rm -it --privileged --cap-add=SYS_NICE --env DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd):/workspace --net=host panda-prim
+```
 
-    Now  build the container image and start the container. Make sure you are in this root directory. These commands mount on the current directory as the containers file system so any changes you make to the files on your host machine will be mirrored in the container. These commands also allow the containers display to be forwarded to your host machine so that you can see it.
-    ```bash
-    sudo docker build -t panda-prim .
+You should now be in the docker container. 
 
-    sudo docker run --rm -it --privileged --cap-add=SYS_NICE --env DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd):/workspace --net=host panda-prim
-    ```
+Now compile C++ package (PandaController)
+```bash
+cd src/PandaController/
+mkdir -p build
+cd build
+[ -f Makefile ] || cmake ..  # Only initialize if not  already
+make install
+cd ../../..
+``` 
 
-    You should now be in the docker container repo. Now build the repo.
-    ```bash
-    catkin build panda-primitives
-    source devel/setup.bash
-    ```
+Now build the ROS packages:
+```bash
+catkin build
+source devel/setup.bash
+```
 
 ## Running
 
-
-1. [SKIP FOR SIMULATION] In the **panda-primitives-control** container, run:
-    `roslaunch controller mover_test.launch`
+1. [SKIP FOR SIMULATION] Start the robot controller:
+    ```bash
+    export PANDA_IP=192.168.1.3 # REPLACE with your panda's IP
+    roslaunch controller mover.launch`
+    ```
 
 2. Run one of the following:
     * [SIMULATION] `roslaunch panda-primitives all.launch only_virtual:=true`
@@ -62,13 +81,19 @@ You will need:
 
 ---
 
-## Notes:
-To view transforms:
+## Tips and Tricks:
+* To view transforms:
 `rosrun rqt_tf_tree rqt_tf_tree`
 
-
-## Dependencies:
-- [panda_ros_msgs](https://github.com/emmanuel-senft/panda-ros-msgs/tree/study)
-- [authoring_msgs](https://github.com/emmanuel-senft/authoring-msgs/tree/study)
-- [rviz_camera_stream](https://github.com/lucasw/rviz_camera_stream)
-- [ros_numpy](https://github.com/eric-wieser/ros_numpy)
+* To open multiple another terminal to you docker container, first run the following on your local machine:
+    ```bash
+    sudo docker ps
+    ```
+    This will give you a list of containers with container IDs. Then run the following with your container ID:
+    ```bash
+    sudo docker exec -it YOUR_CONTAINER_ID bash
+    ```
+    Now run the following in your newly opened terminal to source the workspace.
+    ```bash
+    source devel/setup.bash
+    ```  
