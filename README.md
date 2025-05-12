@@ -5,7 +5,6 @@ This is ros package that used to define Primitives (i.e. skills) for the Franka 
 ## Prerequisites
 For Simulation you will need:
 * Ubuntu machine with:
-    * Static IP of 192.168.1.XXX (Ex/ 192.168.1.5) and Netmask of 255.255.255.0 for the ethernet connected to the Panda. If you have also have a force torque sensor, the ethernet connected to that needs to be set to a static IP of 192.168.2.XXX (Ex/ 192.168.2.5).
     * [Docker Engine](https://docs.docker.com/engine/install/).
     * A ROS Workspace with this package clone under `src/`.
     * The following ROS packages also cloned under `src/` in your ROS workspace:
@@ -19,11 +18,13 @@ For Simulation you will need:
         
 For Running on the Panda, you will need:
 * Above requirements.
-* The [Realtime Kernel Patch Kernel Patch](https://frankaemika.github.io/docs/installation_linux.html#setting-up-the-real-time-kernel) added to the Ubuntu Machine.
 * Franka Emika Panda 7 DOF Robot setup with the [FCI](https://frankaemika.github.io/docs/getting_started.html) and set to static IP of 192.168.1.XXX (Ex/ 192.168.1.3) and Netmask to 255.255.255.0.
     * Robot system version: 4.2.X (FER pandas)
     * Robot / Gripper Server version: 5 / 3
 * [Axio80-M20 Force Torque Sensor](https://www.ati-ia.com/products/ft/ft_models.aspx?id=Axia80-M20) installed on the Panda's End Effector and connected to the host computer via ethernet with IP 192.168.2.2 (or change the IP in src/PandaController/src/ForceTorqueListener.cpp).
+* The following added to the Ubuntu Machine:
+    * The [Realtime Kernel Patch Kernel Patch](https://frankaemika.github.io/docs/installation_linux.html#setting-up-the-real-time-kernel) added to the Ubuntu Machine.
+    * Static IP of 192.168.1.XXX (Ex/ 192.168.1.5) and Netmask of 255.255.255.0 for the ethernet connected to the Panda. The ethernet connected to the Force Torque sensor needs to be set to a static IP of 192.168.2.XXX (Ex/ 192.168.2.5).
 
 
 ## Setup
