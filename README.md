@@ -35,7 +35,7 @@ First set up display forwarding:
 xhost +local:
 ```
 
-Now  build the container image and start the container. Make sure you are in this root directory. These commands mount on the current directory as the containers file system so any changes you make to the files on your host machine will be mirrored in the container. These commands also allow the containers display to be forwarded to your host machine so that you can see it.
+Now  build the container image and start the container. These commands mount on the current directory as the containers file system so any changes you make to the files on your host machine will be mirrored in the container. These commands also allow the containers display to be forwarded to your host machine so that you can see it.
 ```bash
 sudo docker build -f src/panda-primitives/Dockerfile -t panda-prim .
 
