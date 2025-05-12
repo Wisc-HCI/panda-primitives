@@ -11,7 +11,7 @@ if __name__ == '__main__':
         rospack = rospkg.RosPack()
         f=rospy.get_param('~file_name')
         transform = rospy.get_param('~transform')
-        path = rospack.get_path('authoring')+'/config/'+f
+        path = rospack.get_path('panda-primitives')+'/config/'+f
         with open(path) as f:
             doc = yaml.full_load(f)
 

@@ -7,12 +7,21 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Update apt package list and install general packages
 RUN apt-get update && \
     apt-get install -y --fix-missing \
-    curl\
-    python3-pip\
-    build-essential\ 
-    cmake\
-    libeigen3-dev\
-    python3-catkin-tools
+    curl \
+    wget \
+    nano \
+    build-essential \
+    cmake \
+    libeigen3-dev \
+    python3-catkin-tools \
+    python3-pip \
+    ros-noetic-libfranka \
+    ros-noetic-franka-ros \
+    ros-noetic-urdfdom-py \
+    ros-noetic-kdl-parser-py \
+    ros-noetic-kdl-conversions \
+    usbutils
+
 
 
 # Install python packages

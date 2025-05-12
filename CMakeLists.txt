@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(authoring)
+project(panda-primitives)
 
 SET(CMAKE_CXX_FLAGS  "-O3 -fopenmp")
 
@@ -111,6 +111,6 @@ catkin_install_python(PROGRAMS
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 install(TARGETS pandaJacob
-  RUNTIME DESTINATION lib/authoring
+  RUNTIME DESTINATION lib/panda-primitives
 )
 

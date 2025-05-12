@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+
+    <arg name="only_virtual" default="true"/>
+
+    <node pkg="panda-primitives" type="planner" name="planner" output="screen"/>
+
+    <node pkg="panda-primitives" type="mover_server" name="mover_server" output="screen">
+        <param name="only_virtual" type="bool" value="$(arg only_virtual)" />
+    </node>
+    
+    <node pkg="panda-primitives" type="static_publisher" name="rotated_camera_static_publisher">
+        <param name="file_name" type="string" value="transforms.yaml" />
+        <param name="transform" type="string" value="rotated_camera" />
+    </node>
+
+
+    <node pkg="panda-primitives" type="pandaJacob" name="pandaJacob"/>
+
+</launch>
