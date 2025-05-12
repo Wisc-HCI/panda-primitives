@@ -10,8 +10,8 @@ For Simulation you will need:
     * The following ROS packages also cloned under `src/` in your ROS workspace:
         * [panda_ros](https://github.com/Wisc-HCI/panda_ros)
         * [PandController](https://github.com/Wisc-HCI/PandaController)
-        * [panda_ros_msgs](https://github.com/emmanuel-senft/panda-ros-msgs/tree/study)
-        * [authoring_msgs](https://github.com/emmanuel-senft/authoring-msgs/tree/study)
+        * [panda_ros_msgs](https://github.com/emmanuel-senft/panda-ros-msgs)
+        * [authoring_msgs](https://github.com/emmanuel-senft/authoring-msgs)
         * [rviz_camera_stream](https://github.com/lucasw/rviz_camera_stream)
         * [ros_numpy](https://github.com/eric-wieser/ros_numpy)
 
